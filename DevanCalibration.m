@@ -38,86 +38,92 @@ function varargout=DevanCalibration(varargin)
 	% 	end
 	% 	worldPoints(j,i)=
 		worldPoints=worldPointsvalues;
+		Homo=Homographies(worldPoints,imagePoints)
+		V=calculateV(Homo)
+		B=calculateB(V)
+		A=intrinsicParam(B)
+		[rot,trans]=extrinsicParam(Homo,A)
 
-		m_undist=Distorted2StraightLines(imagePoints);
-		for i=1:max(size(imageNumbers))
-			[cx(i),cy(i),fx(i),fy(i),tz(i),tx(i),ty(i),R11(i),R12(i),R13(i),R21(i),R22(i),R23(i),R31(i),R32(i),R33(i)]=world2camera(m_undist(:,:,i),worldPoints)
-		end
-		% for i=1:max(size(imageNumbers))
-		% 	[cx(i),cy(i),fx(i),fy(i),tz(i),tx(i),ty(i),R11(i),R12(i),R13(i),R21(i),R22(i),R23(i),R31(i),R32(i),R33(i)]=world2camera(imagePoints(:,:,i),worldPoints)
-		% end
-		fx=mean(nonzeros(fx));
-		fy=mean(nonzeros(fy));
-		cx=mean(nonzeros(cx));
-		cy=mean(nonzeros(cy));
-		fs=0.0001;
 
-	[r,c,k]=size(imagePoints);
-		lsqin(1)=cx;
-		lsqin(2)=cy;
-		lsqin(3)=fx;
-		lsqin(4)=fy;
-		lsqin(5)=0; %fs
-		lsqin(6:5+k)=tz;
-		lsqin(6+k:5+2*k)=tx;
-		lsqin(6+2*k:5+3*k)=ty;
-		lsqin(6+3*k:5+4*k)=R11;
-		lsqin(6+4*k:5+5*k)=R12;
-		lsqin(6+5*k:5+6*k)=R13;
-		lsqin(6+6*k:5+7*k)=R21;
-		lsqin(6+7*k:5+8*k)=R22;
-		lsqin(6+8*k:5+9*k)=R23;
-		lsqin(6+9*k:5+10*k)=R31;
-		lsqin(6+10*k:5+11*k)=R32;
-		lsqin(6+11*k:5+12*k)=R33;
-		lsqin(6+12*k)=0.00001;
-		lsqin(7+12*k)=0;
-		lsqin(8+12*k)=0;
-		lsqin(9+12*k)=0;
-		lsqin(10+12*k)=0;
+	% 	m_undist=Distorted2StraightLines(imagePoints);
+	% 	for i=1:max(size(imageNumbers))
+	% 		[cx(i),cy(i),fx(i),fy(i),tz(i),tx(i),ty(i),R11(i),R12(i),R13(i),R21(i),R22(i),R23(i),R31(i),R32(i),R33(i)]=world2camera(m_undist(:,:,i),worldPoints)
+	% 	end
+	% 	% for i=1:max(size(imageNumbers))
+	% 	% 	[cx(i),cy(i),fx(i),fy(i),tz(i),tx(i),ty(i),R11(i),R12(i),R13(i),R21(i),R22(i),R23(i),R31(i),R32(i),R33(i)]=world2camera(imagePoints(:,:,i),worldPoints)
+	% 	% end
+	% 	fx=mean(nonzeros(fx));
+	% 	fy=mean(nonzeros(fy));
+	% 	cx=mean(nonzeros(cx));
+	% 	cy=mean(nonzeros(cy));
+	% 	fs=0.0001;
 
-		% lsqin(1)=cx;
-		% lsqin(2)=cy;
-		% lsqin(3)=fx;
-		% lsqin(4)=fy;
-		% lsqin(5)=0.001;
-		% lsqin(6:5+k)=zeros(1,k);
-		% lsqin(6+k:5+2*k)=zeros(1,k);
-		% lsqin(6+2*k:5+3*k)=zeros(1,k);
-		% lsqin(6+3*k:5+4*k)=zeros(1,k);
-		% lsqin(6+4*k:5+5*k)=zeros(1,k);
-		% lsqin(6+5*k:5+6*k)=zeros(1,k);
-		% lsqin(6+6*k:5+7*k)=zeros(1,k);
-		% lsqin(6+7*k:5+8*k)=zeros(1,k);
-		% lsqin(6+8*k:5+9*k)=zeros(1,k);
-		% lsqin(6+9*k:5+10*k)=zeros(1,k);
-		% lsqin(6+10*k:5+11*k)=zeros(1,k);
-		% lsqin(6+11*k:5+12*k)=zeros(1,k);
-		% lsqin(6+12*k)=0;
-		% lsqin(7+12*k)=0;
-		% lsqin(8+12*k)=0;
-		% lsqin(9+12*k)=0;
-		% lsqin(10+12*k)=0;
-		options = optimoptions('lsqnonlin','Display','iter','FunctionTolerance',1e-20,'StepTolerance',1e-20,'MaxFunctionEvaluations',1e14);
-		out=lsqnonlin(@(lsqin) lsqfun(lsqin,worldPoints,imagePoints),lsqin,[],[],options)
+	% [r,c,k]=size(imagePoints);
+	% 	lsqin(1)=cx;
+	% 	lsqin(2)=cy;
+	% 	lsqin(3)=fx;
+	% 	lsqin(4)=fy;
+	% 	lsqin(5)=0; %fs
+	% 	lsqin(6:5+k)=tz;
+	% 	lsqin(6+k:5+2*k)=tx;
+	% 	lsqin(6+2*k:5+3*k)=ty;
+	% 	lsqin(6+3*k:5+4*k)=R11;
+	% 	lsqin(6+4*k:5+5*k)=R12;
+	% 	lsqin(6+5*k:5+6*k)=R13;
+	% 	lsqin(6+6*k:5+7*k)=R21;
+	% 	lsqin(6+7*k:5+8*k)=R22;
+	% 	lsqin(6+8*k:5+9*k)=R23;
+	% 	lsqin(6+9*k:5+10*k)=R31;
+	% 	lsqin(6+10*k:5+11*k)=R32;
+	% 	lsqin(6+11*k:5+12*k)=R33;
+	% 	lsqin(6+12*k)=0.00001;
+	% 	lsqin(7+12*k)=0;
+	% 	lsqin(8+12*k)=0;
+	% 	lsqin(9+12*k)=0;
+	% 	lsqin(10+12*k)=0;
 
-		% out=lsqnonlin(@(cx,cy,fx,fy,fs,tz,tx,ty,R11,R12,R13,R21,R22,R23,R31,R32,R33) lsqfun(cx,cy,fx,fy,fs,tz,tx,ty,R11,R12,R13,R21,R22,R23,R31,R32,R33,worldPoints,imagePoints),[cx,cy,fx,fy,fs,tz,tx,ty,R11,R12,R13,R21,R22,R23,R31,R32,R33])
-		% m_undist=Distorted2StraightLines(imagePoints)
+	% 	% lsqin(1)=cx;
+	% 	% lsqin(2)=cy;
+	% 	% lsqin(3)=fx;
+	% 	% lsqin(4)=fy;
+	% 	% lsqin(5)=0.001;
+	% 	% lsqin(6:5+k)=zeros(1,k);
+	% 	% lsqin(6+k:5+2*k)=zeros(1,k);
+	% 	% lsqin(6+2*k:5+3*k)=zeros(1,k);
+	% 	% lsqin(6+3*k:5+4*k)=zeros(1,k);
+	% 	% lsqin(6+4*k:5+5*k)=zeros(1,k);
+	% 	% lsqin(6+5*k:5+6*k)=zeros(1,k);
+	% 	% lsqin(6+6*k:5+7*k)=zeros(1,k);
+	% 	% lsqin(6+7*k:5+8*k)=zeros(1,k);
+	% 	% lsqin(6+8*k:5+9*k)=zeros(1,k);
+	% 	% lsqin(6+9*k:5+10*k)=zeros(1,k);
+	% 	% lsqin(6+10*k:5+11*k)=zeros(1,k);
+	% 	% lsqin(6+11*k:5+12*k)=zeros(1,k);
+	% 	% lsqin(6+12*k)=0;
+	% 	% lsqin(7+12*k)=0;
+	% 	% lsqin(8+12*k)=0;
+	% 	% lsqin(9+12*k)=0;
+	% 	% lsqin(10+12*k)=0;
+	% 	options = optimoptions('lsqnonlin','Display','iter','FunctionTolerance',1e-20,'StepTolerance',1e-20,'MaxFunctionEvaluations',1e14);
+	% 	out=lsqnonlin(@(lsqin) lsqfun(lsqin,worldPoints,imagePoints),lsqin,[],[],options)
 
-		for i=1:max(size(imageNumbers))
-			figure
-			% Display detected points
-			J = insertText(I{i}, m_undist(:,:,i), 1);
-			J = insertMarker(J, m_undist(:,:,i), 'o', 'Color', 'red', 'Size', 5);
-			imshow(J);
-			title(sprintf('Detected a %d x %d Checkerboard', boardSize));
-		end
+	% 	% out=lsqnonlin(@(cx,cy,fx,fy,fs,tz,tx,ty,R11,R12,R13,R21,R22,R23,R31,R32,R33) lsqfun(cx,cy,fx,fy,fs,tz,tx,ty,R11,R12,R13,R21,R22,R23,R31,R32,R33,worldPoints,imagePoints),[cx,cy,fx,fy,fs,tz,tx,ty,R11,R12,R13,R21,R22,R23,R31,R32,R33])
+	% 	% m_undist=Distorted2StraightLines(imagePoints)
 
-		[cameraParams, imagesUsed, estimationErrors] = estimateCameraParameters(imagePoints, worldPoints)
-		CamParam.cameraParams=cameraParams;
-		CamParam.imagesUsed=imagesUsed;
-		CamParam.estimationErrors=estimationErrors;
-		save('CamParam','CamParam')
+	% 	for i=1:max(size(imageNumbers))
+	% 		figure
+	% 		% Display detected points
+	% 		J = insertText(I{i}, m_undist(:,:,i), 1);
+	% 		J = insertMarker(J, m_undist(:,:,i), 'o', 'Color', 'red', 'Size', 5);
+	% 		imshow(J);
+	% 		title(sprintf('Detected a %d x %d Checkerboard', boardSize));
+	% 	end
+
+	% 	[cameraParams, imagesUsed, estimationErrors] = estimateCameraParameters(imagePoints, worldPoints)
+	% 	CamParam.cameraParams=cameraParams;
+	% 	CamParam.imagesUsed=imagesUsed;
+	% 	CamParam.estimationErrors=estimationErrors;
+	% 	save('CamParam','CamParam')
 end
 
 function [cx,cy,fx,fy,tz,tx,ty,R11,R12,R13,R21,R22,R23,R31,R32,R33]=world2camera(imagePoints,worldPoints)
@@ -287,9 +293,131 @@ function m_undist=Distorted2StraightLines(imagePoints)
 	warning on
 end
 
-function Homography(worldPoints,imagePoints)
+function [Homo]=Homographies(worldPoints,imagePoints)
+	img_count=size(imagePoints,3);
+	Homo=zeros(3,3,img_count);
+	for i=1:img_count
+		Homo(:,:,i)=Homography(worldPoints,imagePoints(:,:,i));
+	end
+end
 
+function [T]=Homography(worldPoints,imagePoints)
+	[worldPoints,NormMat1]=NormalisePoints(worldPoints);
+	[imagePoints,NormMat2]=NormalisePoints(imagePoints);
 
+	M=size(imagePoints,1);
+	x=imagePoints(:,1);
+	y=imagePoints(:,2);
+	vector1=ones(M,1);
+	vector0=zeros(M,1);
+	u=worldPoints(:,1);
+	v=worldPoints(:,2);
+	X=[x y vector1 vector0 vector0 vector0 -u.*x -u.*y;
+		vector0 vector0 vector0 x y vector1 -v.*x -v.*y];
+	U=[u;v];
+	if rank(X)>=8
+		T_temp=X\U;
+	else
+		fprintf('\nWent wrong at Homography');
+	end
+	T_temp(9)=1;
+	Tinv=reshape(T_temp,3,3);
+	Tinv=NormMat2\(Tinv*NormMat1);
+	T=inv(Tinv);
+	T=T./T(3,3);
+	T=T';
+	T=T./T(3,3);
+
+	% tform = projective2d(T);
+end
+
+function [pointNorm,NormMatInv]=NormalisePoints(points)
+	N=size(points,1);
+	centre=mean(points,1);
+	%shift centroid of points to 
+	pointNorm(:,1)=points(:,1)-centre(1);
+	pointNorm(:,2)=points(:,2)-centre(2);
+	SumOfSquareDistances= sum( hypot(pointNorm(:,1),pointNorm(:,2)).^2 );
+
+	if SumOfSquareDistances > 0
+	    scaleFactor = sqrt(2*N) / sqrt(SumOfSquareDistances);
+	else
+	    % If all input control points are at the same location, the denominator
+	    % of the scale factor goes to 0. Don't rescale in this case.
+	    if isa(points,'single')
+	        scaleFactor = single(1);
+	    else
+	        scaleFactor = 1.0;
+	    end
+	end
+
+	pointNorm = pointNorm .* scaleFactor;
+	NormMatInv= [...
+    1/scaleFactor,     0,            0;...
+    0,            1/scaleFactor,     0;...
+    centre(1),      centre(2),      1];
+end
+
+function [V]=calculateV(H)
+	img_count=size(H,3);
+	for i=1:img_count
+		Homo=H(:,:,i)';
+		V(i*2-1,:) = getv(H, 1, 2);
+    	V(i*2, :) = getv(H, 1, 1) - getv(H, 2, 2);
+	end
+end
+
+function [v]=getv(H,i,j)
+	v=[H(i,1)*H(j,1), H(i,1)*H(j,2)+H(i,2)*H(j,1), H(i,2)*H(j,2),...
+    H(i,3)*H(j,1)+H(i,1)*H(j,3), H(i,3)*H(j,2)+H(i,2)*H(j,3), H(i,3)*H(j,3)];
+end
+
+function [B]=calculateB(V)
+	[~, ~, U] = svd(V);
+	b = U(:, end);
+	B = [b(1), b(2), b(4); b(2), b(3), b(5); b(4), b(5), b(6)];
+end
+
+function A=intrinsicParam(B)
+	cy = (B(1,2)*B(1,3) - B(1,1)*B(2,3)) / (B(1,1)*B(2,2)-B(1,2)^2);
+	lambda = B(3,3) - (B(1,3)^2 + cy * (B(1,2)*B(1,3) - B(1,1)*B(2,3))) / B(1,1);
+	fx = sqrt(lambda / B(1,1));
+	fy = sqrt(lambda * B(1,1) / (B(1,1) * B(2,2) - B(1,2)^2));
+	skew = -B(1,2) * fx^2 * fy / lambda;
+	cx = skew * cy / fx - B(1,3) * fx^2 / lambda;
+	A = [fx, skew, cx; ...
+     0, fy, cy; ...
+     0, 0, 1];
+end
+
+function [rot,trans]=extrinsicParam(Homo,A)
+	img_count=size(Homo, 3);
+	rot=zeros(3,img_count);
+	trans=zeros(3,img_count); 
+	Ainv = inv(A);
+	for i = 1:img_count;
+	    H = Homo(:, :, i);
+	    h1 = H(:, 1);
+	    h2 = H(:, 2);
+	    h3 = H(:, 3);
+	    lambda = 1 / norm(Ainv * h1); 
+	    
+	    % 3D rotation matrix
+	    r1 = lambda * Ainv * h1; 
+	    r2 = lambda * Ainv * h2; 
+	    r3 = cross(r1, r2);
+	    R = [r1,r2,r3];
+	    % rot(:,:,i)=R';
+	    
+	    % rotationVectors(:, i) = vision.internal.calibration.rodriguesMatrixToVector(R);
+	    rot(:,i)= vision.internal.calibration.rodriguesMatrixToVector(R)
+	    % translation vector
+	    t = lambda * Ainv * h3;  
+	    trans(:, i) = t;
+	end
+
+	% rot = rot';
+	trans = trans';
 end
 
 % function errorval=lsqfun(cx,cy,fx,fy,fs,tz,tx,ty,R11,R12,R13,R21,R22,R23,R31,R32,R33,worldPoints,imagePoints)
