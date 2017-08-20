@@ -1,0 +1,491 @@
+function varargout=DevanCalibration(varargin)
+	format long
+	%handle the input variables
+	for i=1:nargin/2
+		switch varargin{i*2-1}
+		case 'folder'
+			folder=varargin{i*2};
+		case 'ImageName'
+			ImageName=varargin{i*2};
+		case 'images'
+			imageNumbers=varargin{i*2};
+		end
+	end
+	%create path to specific images
+	for i=1:max(size(imageNumbers))
+		images=strcat(strcat(ImageName,num2str(imageNumbers{i})),'.tif');
+		ImageFileName{i}=fullfile(folder,images);
+		I{i} = imread(ImageFileName{i});
+	end
+	%detect the location of checker pattern intersections
+	[imagePoints, boardSize] = detectCheckerboardPoints(ImageFileName);
+
+	for i=1:max(size(imageNumbers))
+		figure
+		% Display detected points
+		J = insertText(I{i}, imagePoints(:,:,i), 1:size(imagePoints(:,:,i), 1));
+		J = insertMarker(J, imagePoints(:,:,i), 'o', 'Color', 'red', 'Size', 5);
+		imshow(J);
+		title(sprintf('Detected a %d x %d Checkerboard', boardSize));
+	end
+
+	% [r,c,k]=size(imagePoints);
+	% worldPoints=zeros(r,c)
+	% vals=0:10:120;
+	% for i=1:r
+	% 	if r/12<1
+	% 		adx=adx+10
+	% 	end
+	% 	worldPoints(j,i)=
+		worldPoints=worldPointsvalues;
+
+		m_undist=Distorted2StraightLines(imagePoints);
+		for i=1:max(size(imageNumbers))
+			[cx(i),cy(i),fx(i),fy(i),tz(i),tx(i),ty(i),R11(i),R12(i),R13(i),R21(i),R22(i),R23(i),R31(i),R32(i),R33(i)]=world2camera(m_undist(:,:,i),worldPoints)
+		end
+		% for i=1:max(size(imageNumbers))
+		% 	[cx(i),cy(i),fx(i),fy(i),tz(i),tx(i),ty(i),R11(i),R12(i),R13(i),R21(i),R22(i),R23(i),R31(i),R32(i),R33(i)]=world2camera(imagePoints(:,:,i),worldPoints)
+		% end
+		fx=mean(nonzeros(fx));
+		fy=mean(nonzeros(fy));
+		cx=mean(nonzeros(cx));
+		cy=mean(nonzeros(cy));
+		fs=0.0001;
+
+	[r,c,k]=size(imagePoints);
+		lsqin(1)=cx;
+		lsqin(2)=cy;
+		lsqin(3)=fx;
+		lsqin(4)=fy;
+		lsqin(5)=0; %fs
+		lsqin(6:5+k)=tz;
+		lsqin(6+k:5+2*k)=tx;
+		lsqin(6+2*k:5+3*k)=ty;
+		lsqin(6+3*k:5+4*k)=R11;
+		lsqin(6+4*k:5+5*k)=R12;
+		lsqin(6+5*k:5+6*k)=R13;
+		lsqin(6+6*k:5+7*k)=R21;
+		lsqin(6+7*k:5+8*k)=R22;
+		lsqin(6+8*k:5+9*k)=R23;
+		lsqin(6+9*k:5+10*k)=R31;
+		lsqin(6+10*k:5+11*k)=R32;
+		lsqin(6+11*k:5+12*k)=R33;
+		lsqin(6+12*k)=0.00001;
+		lsqin(7+12*k)=0;
+		lsqin(8+12*k)=0;
+		lsqin(9+12*k)=0;
+		lsqin(10+12*k)=0;
+
+		% lsqin(1)=cx;
+		% lsqin(2)=cy;
+		% lsqin(3)=fx;
+		% lsqin(4)=fy;
+		% lsqin(5)=0.001;
+		% lsqin(6:5+k)=zeros(1,k);
+		% lsqin(6+k:5+2*k)=zeros(1,k);
+		% lsqin(6+2*k:5+3*k)=zeros(1,k);
+		% lsqin(6+3*k:5+4*k)=zeros(1,k);
+		% lsqin(6+4*k:5+5*k)=zeros(1,k);
+		% lsqin(6+5*k:5+6*k)=zeros(1,k);
+		% lsqin(6+6*k:5+7*k)=zeros(1,k);
+		% lsqin(6+7*k:5+8*k)=zeros(1,k);
+		% lsqin(6+8*k:5+9*k)=zeros(1,k);
+		% lsqin(6+9*k:5+10*k)=zeros(1,k);
+		% lsqin(6+10*k:5+11*k)=zeros(1,k);
+		% lsqin(6+11*k:5+12*k)=zeros(1,k);
+		% lsqin(6+12*k)=0;
+		% lsqin(7+12*k)=0;
+		% lsqin(8+12*k)=0;
+		% lsqin(9+12*k)=0;
+		% lsqin(10+12*k)=0;
+		options = optimoptions('lsqnonlin','Display','iter','FunctionTolerance',1e-20,'StepTolerance',1e-20,'MaxFunctionEvaluations',1e14);
+		out=lsqnonlin(@(lsqin) lsqfun(lsqin,worldPoints,imagePoints),lsqin,[],[],options)
+
+		% out=lsqnonlin(@(cx,cy,fx,fy,fs,tz,tx,ty,R11,R12,R13,R21,R22,R23,R31,R32,R33) lsqfun(cx,cy,fx,fy,fs,tz,tx,ty,R11,R12,R13,R21,R22,R23,R31,R32,R33,worldPoints,imagePoints),[cx,cy,fx,fy,fs,tz,tx,ty,R11,R12,R13,R21,R22,R23,R31,R32,R33])
+		% m_undist=Distorted2StraightLines(imagePoints)
+
+		for i=1:max(size(imageNumbers))
+			figure
+			% Display detected points
+			J = insertText(I{i}, m_undist(:,:,i), 1);
+			J = insertMarker(J, m_undist(:,:,i), 'o', 'Color', 'red', 'Size', 5);
+			imshow(J);
+			title(sprintf('Detected a %d x %d Checkerboard', boardSize));
+		end
+
+		[cameraParams, imagesUsed, estimationErrors] = estimateCameraParameters(imagePoints, worldPoints)
+		CamParam.cameraParams=cameraParams;
+		CamParam.imagesUsed=imagesUsed;
+		CamParam.estimationErrors=estimationErrors;
+		save('CamParam','CamParam')
+end
+
+function [cx,cy,fx,fy,tz,tx,ty,R11,R12,R13,R21,R22,R23,R31,R32,R33]=world2camera(imagePoints,worldPoints)
+	[r,c,k]=size(imagePoints);
+	for i=1:r
+		M(i,:)=[1 0 worldPoints(i,1) worldPoints(i,2) 0 0 -imagePoints(i,1)*worldPoints(i,1) -imagePoints(i,1)*worldPoints(i,2)];
+		M(i+1,:)=[0 1 0 0 worldPoints(i,1) worldPoints(i,2) -imagePoints(i,2)*worldPoints(i,1) -imagePoints(i,2)*worldPoints(i,2)];
+		b(i,1)=imagePoints(i,1);
+		b(i+1,1)=imagePoints(i,2);
+	end
+	% n=pinv(M)*b
+	n=M\b
+
+	R=[-n(3)*n(4);(n(4)^2-n(3)^2)];
+	L=[(n(3)*n(8)+n(4)*n(7)), n(5)*n(6), (n(5)*n(8)+n(6)*n(7)), n(7)*n(8);
+	2*(n(3)*n(7)-n(4)*n(8)), (n(5)^2-n(6)^2),2*(n(5)*n(7)-n(6)*n(8)), (n(7)^2-n(8)^2)];
+	epsilon=L\R;
+	cx=epsilon(1);
+	cy=epsilon(2);
+	fx=sqrt(epsilon(4)-epsilon(3)^2/epsilon(2)-epsilon(1)^2);
+	fy=sqrt((epsilon(4)-epsilon(3)^2/epsilon(2)-epsilon(1)^2)/epsilon(2));
+
+	tz=sqrt(2*(((n(3)-n(7)*cx)^2+(n(4)-n(8)*cx)^2)/(fx^2)+((n(5)-n(7)*cy)^2+(n(6)-n(8)*cy)^2)/(fy^2)+n(7)^2+n(8)^2)^-1);
+	tx=(n(1)-cx)*tz/fx;
+	ty=(n(2)-cy)*tz/fy;
+
+	R11=tz*(n(3)-n(7)*cx)/fx;
+	R12=tz*(n(4)-n(8)*cx)/fx;
+	R21=tz*(n(5)-n(7)*cy)/fy;
+	R22=tz*(n(6)-n(8)*cy)/fy;
+	R31=tz*n(7);
+	R32=tz*n(8);
+	R33=-R11*R22+R21*R12;
+	R23=R11*R32-R31*R12;
+	R13=-R21*R32+R31*R22;
+	[cx,cy,fx,fy,tz,tx,ty,R11,R12,R13,R21,R22,R23,R31,R32,R33]=makereal(cx,cy,fx,fy,tz,tx,ty,R11,R12,R13,R21,R22,R23,R31,R32,R33);
+end
+
+function out=world2sensor(cx,cy,fx,fy,fs,tz,tx,ty,R11,R12,R13,R21,R22,R23,R31,R32,R33,worldPoints)
+	% convert from the world coordinate system to the sensor plane coordinate system (M->m)
+	K=[fx,fs,cx,0;0,fy,cy,0;0,0,1,0];
+	T=[R11 R12 R13 tx;R21 R22 R23 ty;R31 R32 R33 tz; 0 0 0 1];
+	for i=1:max(size(worldPoints))
+		Z=[worldPoints(i,1);worldPoints(i,2);0;1];
+		answer=K*T*Z;
+		out(i,:)=answer';
+	end
+end
+
+function out=Distortion(m,cx,cy,k1,k2,k3,k4,k5)
+	%m->m~
+	[r,c,k]=size(m);
+	for i=1:k
+		for j=1:r
+			row=sqrt((m(j,1,i)-cx)^2+(m(j,2,i)-cy)^2);
+			ruv=[(m(j,1,i)-cx);(m(j,2,i)-cy)];	%radial unit vector
+			ruv=norm(ruv);
+			tuv=null(ruv(:).');
+			tuv=norm(tuv);
+			%radial
+			Drad=k1*row^3*ruv+k2*row^5*ruv+k3*row^7*ruv;
+			%de-centering
+			theta=atan2(m(j,1,i),m(j,2,i));
+			Dspher=k4*row^2*(3*sin(theta-k5)*ruv+cos(theta-k5)*tuv);
+
+			
+
+			answer=m(j,:,i)'+Dspher+Drad;
+			out(j,1,i)=answer(1);
+			out(j,2,i)=answer(2);
+		end
+	end
+
+end
+
+function errorval=lsqfun(var,worldPoints,imagePoints)
+	[r,c,k]=size(imagePoints);
+	cx=var(1);
+	cy=var(2);
+	fx=var(3);
+	fy=var(4);
+	fs=var(5);
+	tz=var(6:5+k);
+	tx=var(6+k:5+2*k);
+	ty=var(6+2*k:5+3*k);
+	R11=var(6+3*k:5+4*k);
+	R12=var(6+4*k:5+5*k);
+	R13=var(6+5*k:5+6*k);
+	R21=var(6+6*k:5+7*k);
+	R22=var(6+7*k:5+8*k);
+	R23=var(6+8*k:5+9*k);
+	R31=var(6+9*k:5+10*k);
+	R32=var(6+10*k:5+11*k);
+	R33=var(6+11*k:5+12*k);
+	k1=var(6+12*k);
+	k2=var(7+12*k);
+	k3=var(8+12*k);
+	k4=var(9+12*k);
+	k5=var(10+12*k);
+
+
+	for i=1:k
+		out{i}=world2sensor(cx,cy,fx,fy,fs,tz(i),tx(i),ty(i),R11(i),R12(i),R13(i),R21(i),R22(i),R23(i),R31(i),R32(i),R33(i),worldPoints);
+	end
+
+	for i=1:k
+		m(:,:,i)=out{i};
+	end
+
+	m=Distortion(m,cx,cy,k1,k2,k3,k4,k5);
+
+	for i=1:k
+		out{i}=m(:,:,i);
+	end
+
+	errorval=0;
+	for i=1:k
+		for j=1:r
+			errorval=errorval+norm((imagePoints(j,1,i)-out{i}(j,1))^2+(imagePoints(j,2,i)-out{i}(j,2))^2);
+		end
+	end
+
+end
+
+function m_undist=Distorted2StraightLines(imagePoints)
+	warning off
+	[r,c,k]=size(imagePoints);
+	maximumx=max(max(imagePoints(:,1,:)));
+	minimumx=min(min(imagePoints(:,1,:)));
+	maximumy=max(max(imagePoints(:,2,:)));
+	minimumy=min(min(imagePoints(:,2,:)));
+	for i=1:k
+		clear X
+		clear Y
+		count=1;
+		for j=1:13
+			X(:,1)=imagePoints(count:count+11,1,i);
+			Y=imagePoints(count:count+11,2,i);
+			X(:,2)=ones(12,1);
+			A(j,:,i)=X\Y;
+			count=count+12;
+		end
+		clear X
+		clear Y
+		coord=[1 13 25 37 49 61 73 85 97 109 121 133 145];
+		for j=1:12
+			X(:,1)=imagePoints(coord,1,i);
+			Y=imagePoints(coord,2,i);
+			X(:,2)=ones(13,1);
+			B(j,:,i)=X\Y;
+			coord=coord+1;
+		end
+		count=1;
+		for j=1:13
+			curves2(1,:)=[(minimumx-100), (maximumx+100)];
+			curves2(2,:)=[(A(j,1,i)*(minimumx-100)+A(j,2,i)), (A(j,1,i)*(maximumx+100)+A(j,2,i))];
+			for l=1:12
+				curves1(1,:)=[(minimumx-100), (maximumx+100)];
+				curves1(2,:)=[(B(l,1,i)*(minimumx-100)+B(l,2,i)), (B(l,1,i)*(maximumx+100)+B(l,2,i))];
+				out=InterX(curves1,curves2);
+				m_undist(count,1,i)=out(1,1);
+				m_undist(count,2,i)=out(2,1);
+				count=count+1;
+			end
+		end
+	end
+	warning on
+end
+
+% function errorval=lsqfun(cx,cy,fx,fy,fs,tz,tx,ty,R11,R12,R13,R21,R22,R23,R31,R32,R33,worldPoints,imagePoints)
+% 	[r,c,k]=size(imagePoints)
+% 	cx=var(1);
+% 	cy=var(2);
+% 	fx=var(3);
+% 	fy=var(4);
+% 	fs=var(5);
+% 	tz=var(6:5+k);
+% 	tx=var(6+k:5+2*k);
+% 	ty=var(6+2*k:5+3*k);
+% 	R11=var(6+3*k:5+4*k);
+% 	R12=var(6+4*k:5+5*k);
+% 	R13=var(6+5*k:5+6*k);
+% 	R21=var(6+6*k:5+7*k);
+% 	R22=var(6+7*k:5+8*k);
+% 	R23=var(6+8*k:5+9*k);
+% 	R31=var(6+9*k:5+10*k);
+% 	R32=var(6+10*k:5+11*k);
+% 	R33=var(6+11*k:5+12*k);
+
+
+% 	for i=1:k
+% 		out{i}=world2sensor(cx,cy,fx,fy,fs,tz(i),tx(i),ty(i),R11(i),R12(i),R13(i),R21(i),R22(i),R23(i),R31(i),R32(i),R33(i),worldPoints);
+% 	end
+
+% 	errorval=0;
+% 	for i=1:k
+% 		for j=1:r
+% 			errorval=errorval+norm((imagePoints(j,1,i)-out{i}(j,1))^2+(imagePoints(j,2,i)-out{i}(j,2))^2);
+% 		end
+% 	end
+
+% end
+
+function varargout=makereal(varargin)
+	for i=1:nargin
+		if ~isreal(varargin{i})
+			varargout{i}=0;
+		else 
+			varargout{i}=varargin{i};
+		end
+	end
+end
+
+function out=worldPointsvalues
+	out=[110 0;
+	100 0;
+	90 0;
+	80 0;
+	70 0;
+	60 0;
+	50 0;
+	40 0;
+	30 0;
+	20 0;
+	10 0;
+	0 0;
+	110 10;
+	100 10;
+	90 10;
+	80 10;
+	70 10;
+	60 10;
+	50 10;
+	40 10;
+	30 10;
+	20 10;
+	10 10;
+	0 10;
+	110 20;
+	100 20;
+	90 20;
+	80 20;
+	70 20;
+	60 20;
+	50 20;
+	40 20;
+	30 20;
+	20 20;
+	10 20;
+	0 20;
+	110 30;
+	100 30;
+	90 30;
+	80 30;
+	70 30;
+	60 30;
+	50 30;
+	40 30;
+	30 30;
+	20 30;
+	10 30;
+	0 30;
+	110 40;
+	100 40;
+	90 40;
+	80 40;
+	70 40;
+	60 40;
+	50 40;
+	40 40;
+	30 40;
+	20 40;
+	10 40;
+	0 40;
+	110 50;
+	100 50;
+	90 50;
+	80 50;
+	70 50;
+	60 50;
+	50 50;
+	40 50;
+	30 50;
+	20 50;
+	10 50;
+	0 50;
+	110 60;
+	100 60;
+	90 60;
+	80 60;
+	70 60;
+	60 60;
+	50 60;
+	40 60;
+	30 60;
+	20 60;
+	10 60;
+	0 60;
+	110 70;
+	100 70;
+	90 70;
+	80 70;
+	70 70;
+	60 70;
+	50 70;
+	40 70;
+	30 70;
+	20 70;
+	10 70;
+	0 70;
+	110 80;
+	100 80;
+	90 80;
+	80 80;
+	70 80;
+	60 80;
+	50 80;
+	40 80;
+	30 80;
+	20 80;
+	10 80;
+	0 80;
+	110 90;
+	100 90;
+	90 90;
+	80 90;
+	70 90;
+	60 90;
+	50 90;
+	40 90;
+	30 90;
+	20 90;
+	10 90;
+	0 90;
+	110 100;
+	100 100;
+	90 100;
+	80 100;
+	70 100;
+	60 100;
+	50 100;
+	40 100;
+	30 100;
+	20 100;
+	10 100;
+	0 100;
+	110 110;
+	100 110;
+	90 110;
+	80 110;
+	70 110;
+	60 110;
+	50 110;
+	40 110;
+	30 110;
+	20 110;
+	10 110;
+	0 110;
+	110 120;
+	100 120;
+	90 120;
+	80 120;
+	70 120;
+	60 120;
+	50 120;
+	40 120;
+	30 120;
+	20 120;
+	10 120;
+	0 120];
+end
