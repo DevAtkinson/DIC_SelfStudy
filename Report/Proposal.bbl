@@ -1,0 +1,58 @@
+\begin{thebibliography}{10}
+
+\bibitem{lucasUnifying}
+S.~Baker and I.~Matthews.
+\newblock {\em Lucas-Kanade 20 Years on: A Unifying Framework}.
+\newblock Number pt. 1 in Technical report. Carnegie Mellon University, The
+  Robotics Institute, 2002.
+
+\bibitem{apertureProblem}
+Marc~D. Binder, Nobutaka Hirokawa, and Uwe Windhorst, editors.
+\newblock {\em Aperture Problem}.
+\newblock Springer Berlin Heidelberg, Berlin, Heidelberg, 2009.
+
+\bibitem{conradiecharacterising}
+JH~Conradie, DZ~Turnerb, and TH~Beckerc.
+\newblock Characterising damage in structural materials using digital image
+  correlation and peridynamics.
+
+\bibitem{farneback2003two}
+Gunnar Farneb{\"a}ck.
+\newblock Two-frame motion estimation based on polynomial expansion.
+\newblock {\em Image analysis}, pages 363--370, 2003.
+
+\bibitem{grediac}
+M~Gr{\'e}diac, F~Pierron, and Y~Surrel.
+\newblock Novel procedure for complete in-plane composite characterization
+  using a single t-shaped specimen.
+\newblock {\em Experimental Mechanics}, 39(2):142--149, 1999.
+
+\bibitem{lucas1981iterative}
+Bruce~D Lucas, Takeo Kanade, et~al.
+\newblock An iterative image registration technique with an application to
+  stereo vision.
+\newblock 1981.
+
+\bibitem{luong1997self}
+Q-T Luong and Olivier~D Faugeras.
+\newblock Self-calibration of a moving camera from point correspondences and
+  fundamental matrices.
+\newblock {\em International Journal of computer vision}, 22(3):261--289, 1997.
+
+\bibitem{sutton2009image}
+M.A. Sutton, J.J. Orteu, and H.~Schreier.
+\newblock {\em Image Correlation for Shape, Motion and Deformation
+  Measurements: Basic Concepts,Theory and Applications}.
+\newblock Springer US, 2009.
+
+\bibitem{uras1988computational}
+Sergio Uras, Federico Girosi, Alessandro Verri, and Vincent Torre.
+\newblock A computational approach to motion perception.
+\newblock {\em Biological Cybernetics}, 60(2):79--87, 1988.
+
+\bibitem{emerging}
+Zhengyou Zhang.
+\newblock {\em Camera Calibration}.
+\newblock Prentice Hall PTR, 2004.
+
+\end{thebibliography}

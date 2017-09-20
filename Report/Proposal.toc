@@ -1,0 +1,120 @@
+\contentsline {chapter}{Contents}{5}
+\contentsline {chapter}{List of Figures}{7}
+\contentsline {chapter}{\numberline {1}Introduction}{8}
+\contentsline {section}{\numberline {1.1}Background}{8}
+\contentsline {section}{\numberline {1.2}Motivation}{9}
+\contentsline {chapter}{\numberline {2}Problem statement}{11}
+\contentsline {chapter}{\numberline {3}Literature study}{12}
+\contentsline {section}{\numberline {3.1}Overview of DIC and DVC}{12}
+\contentsline {section}{\numberline {3.2}Correlation}{12}
+\contentsline {subsection}{\numberline {3.2.1}Correspondence problem and speckle patterns}{13}
+\contentsline {subsection}{\numberline {3.2.2}Interpolation}{13}
+\contentsline {subsection}{\numberline {3.2.3}Warp function}{14}
+\contentsline {subsection}{\numberline {3.2.4}Correlation criteria}{14}
+\contentsline {subsubsection}{Sum of square difference}{14}
+\contentsline {subsubsection}{Zero-mean sum of squared difference}{15}
+\contentsline {subsubsection}{Normalised sum of squared difference}{15}
+\contentsline {subsubsection}{Zero-mean normalised sum of square difference}{15}
+\contentsline {subsection}{\numberline {3.2.5}Subset matching}{16}
+\contentsline {subsubsection}{Lucas-Kanade}{16}
+\contentsline {section}{\numberline {3.3}Digital cameras}{17}
+\contentsline {section}{\numberline {3.4}Camera optics}{17}
+\contentsline {subsection}{\numberline {3.4.1}Circle of confusion}{19}
+\contentsline {subsection}{\numberline {3.4.2}Depth of field}{20}
+\contentsline {subsection}{\numberline {3.4.3}Field of view}{20}
+\contentsline {subsection}{\numberline {3.4.4}Transformation to image plane}{21}
+\contentsline {subsection}{\numberline {3.4.5}Front image plane model}{21}
+\contentsline {section}{\numberline {3.5}Coordinate systems}{21}
+\contentsline {subsection}{\numberline {3.5.1}Homogeneous coordinates}{22}
+\contentsline {subsection}{\numberline {3.5.2}World to camera coordinate system}{23}
+\contentsline {subsection}{\numberline {3.5.3}Camera and imaging plane coordinates}{23}
+\contentsline {subsection}{\numberline {3.5.4}Image plane and sensor coordinates}{23}
+\contentsline {subsection}{\numberline {3.5.5}World to sensor coordinates}{24}
+\contentsline {section}{\numberline {3.6}Distortion}{24}
+\contentsline {subsection}{\numberline {3.6.1}Spherical distortion}{25}
+\contentsline {subsection}{\numberline {3.6.2}Coma distortion}{25}
+\contentsline {subsection}{\numberline {3.6.3}Astigmatism}{25}
+\contentsline {subsection}{\numberline {3.6.4}Curvature of field}{25}
+\contentsline {subsection}{\numberline {3.6.5}Linear}{26}
+\contentsline {subsection}{\numberline {3.6.6}Radial}{26}
+\contentsline {subsection}{\numberline {3.6.7}De-centering}{26}
+\contentsline {section}{\numberline {3.7}Calibration}{26}
+\contentsline {subsection}{\numberline {3.7.1}Inverse problem}{27}
+\contentsline {subsection}{\numberline {3.7.2}Calibration plate}{27}
+\contentsline {subsection}{\numberline {3.7.3}Homography}{27}
+\contentsline {subsection}{\numberline {3.7.4}Estimating homography with direct linear transform}{28}
+\contentsline {subsection}{\numberline {3.7.5}Absolute conic}{29}
+\contentsline {subsection}{\numberline {3.7.6}Constraints on intrinsic parameters}{30}
+\contentsline {subsection}{\numberline {3.7.7}Intrinsic parameters and the absolute conic}{30}
+\contentsline {subsection}{\numberline {3.7.8}Closed form solution}{31}
+\contentsline {subsection}{\numberline {3.7.9}Distortion in Calibration}{32}
+\contentsline {section}{\numberline {3.8}Displacement fields}{32}
+\contentsline {subsection}{\numberline {3.8.1}DIC displacement fields}{32}
+\contentsline {subsection}{\numberline {3.8.2}DVC displacement fields}{32}
+\contentsline {chapter}{\numberline {4}Objectives}{35}
+\contentsline {section}{\numberline {4.1}Literature review}{35}
+\contentsline {section}{\numberline {4.2}Framework and preliminary backend code}{35}
+\contentsline {section}{\numberline {4.3}Validating the preliminary backend code}{36}
+\contentsline {section}{\numberline {4.4}Improve preliminary backend code}{36}
+\contentsline {section}{\numberline {4.5}Creating the GUI}{36}
+\contentsline {section}{\numberline {4.6}Validate the program}{36}
+\contentsline {chapter}{\numberline {5}Scope}{37}
+\contentsline {chapter}{\numberline {6}Research planning}{38}
+\contentsline {section}{\numberline {6.1}Literature review}{38}
+\contentsline {paragraph}{Time frame}{38}
+\contentsline {paragraph}{Requirements}{38}
+\contentsline {paragraph}{Outputs}{38}
+\contentsline {paragraph}{Cost}{38}
+\contentsline {paragraph}{Milestones}{38}
+\contentsline {section}{\numberline {6.2}DIC framework}{39}
+\contentsline {paragraph}{Time frame}{39}
+\contentsline {paragraph}{Requirements}{39}
+\contentsline {paragraph}{Outputs}{39}
+\contentsline {paragraph}{Cost}{39}
+\contentsline {paragraph}{Milestones}{39}
+\contentsline {section}{\numberline {6.3}Program the backend}{39}
+\contentsline {paragraph}{Time frame}{40}
+\contentsline {paragraph}{Requirements}{40}
+\contentsline {paragraph}{Outputs}{40}
+\contentsline {paragraph}{Cost}{40}
+\contentsline {paragraph}{Milestones}{40}
+\contentsline {section}{\numberline {6.4}Validate the backend}{40}
+\contentsline {paragraph}{Time frame}{40}
+\contentsline {paragraph}{Requirements}{40}
+\contentsline {paragraph}{Outputs}{40}
+\contentsline {paragraph}{Cost}{40}
+\contentsline {paragraph}{Milestones}{40}
+\contentsline {section}{\numberline {6.5}Specimen design}{40}
+\contentsline {paragraph}{Time frame}{41}
+\contentsline {paragraph}{Requirements}{41}
+\contentsline {paragraph}{Outputs}{41}
+\contentsline {paragraph}{Cost}{41}
+\contentsline {paragraph}{Milestones}{41}
+\contentsline {section}{\numberline {6.6}Improve backend}{41}
+\contentsline {paragraph}{Time frame}{41}
+\contentsline {paragraph}{Requirements}{41}
+\contentsline {paragraph}{Outputs}{41}
+\contentsline {paragraph}{Cost}{41}
+\contentsline {paragraph}{Milestones}{41}
+\contentsline {section}{\numberline {6.7}Create the GUI}{42}
+\contentsline {paragraph}{Time frame}{42}
+\contentsline {paragraph}{Requirements}{42}
+\contentsline {paragraph}{Outputs}{42}
+\contentsline {paragraph}{Cost}{42}
+\contentsline {paragraph}{Milestones}{42}
+\contentsline {section}{\numberline {6.8}Validate the program}{42}
+\contentsline {paragraph}{Time frame}{43}
+\contentsline {paragraph}{Requirements}{43}
+\contentsline {paragraph}{Outputs}{43}
+\contentsline {paragraph}{Cost}{43}
+\contentsline {paragraph}{Milestones}{43}
+\contentsline {section}{\numberline {6.9}Write up thesis}{43}
+\contentsline {paragraph}{Time frame}{43}
+\contentsline {paragraph}{Requirements}{43}
+\contentsline {paragraph}{Outputs}{43}
+\contentsline {paragraph}{Cost}{43}
+\contentsline {paragraph}{Milestones}{43}
+\contentsline {chapter}{\numberline {7}Budget}{44}
+\contentsline {chapter}{\numberline {8}Time-frame}{45}
+\contentsline {chapter}{\numberline {9}Conclusion}{47}
+\contentsline {chapter}{Bibliography}{48}

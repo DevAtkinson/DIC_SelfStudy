@@ -1,0 +1,67 @@
+\BOOKMARK [0][-]{section*.3}{Contents}{}% 1
+\BOOKMARK [0][-]{section*.5}{List of Figures}{}% 2
+\BOOKMARK [0][-]{chapter.1}{Introduction}{}% 3
+\BOOKMARK [1][-]{section.1.1}{Background}{chapter.1}% 4
+\BOOKMARK [1][-]{section.1.2}{Motivation}{chapter.1}% 5
+\BOOKMARK [0][-]{chapter.2}{Problem statement}{}% 6
+\BOOKMARK [0][-]{chapter.3}{Literature study}{}% 7
+\BOOKMARK [1][-]{section.3.1}{Overview of DIC and DVC}{chapter.3}% 8
+\BOOKMARK [1][-]{section.3.2}{Correlation}{chapter.3}% 9
+\BOOKMARK [2][-]{subsection.3.2.1}{Correspondence problem and speckle patterns}{section.3.2}% 10
+\BOOKMARK [2][-]{subsection.3.2.2}{Interpolation}{section.3.2}% 11
+\BOOKMARK [2][-]{subsection.3.2.3}{Warp function}{section.3.2}% 12
+\BOOKMARK [2][-]{subsection.3.2.4}{Correlation criteria}{section.3.2}% 13
+\BOOKMARK [2][-]{subsection.3.2.5}{Subset matching}{section.3.2}% 14
+\BOOKMARK [1][-]{section.3.3}{Digital cameras}{chapter.3}% 15
+\BOOKMARK [1][-]{section.3.4}{Camera optics}{chapter.3}% 16
+\BOOKMARK [2][-]{subsection.3.4.1}{Circle of confusion}{section.3.4}% 17
+\BOOKMARK [2][-]{subsection.3.4.2}{Depth of field}{section.3.4}% 18
+\BOOKMARK [2][-]{subsection.3.4.3}{Field of view}{section.3.4}% 19
+\BOOKMARK [2][-]{subsection.3.4.4}{Transformation to image plane}{section.3.4}% 20
+\BOOKMARK [2][-]{subsection.3.4.5}{Front image plane model}{section.3.4}% 21
+\BOOKMARK [1][-]{section.3.5}{Coordinate systems}{chapter.3}% 22
+\BOOKMARK [2][-]{subsection.3.5.1}{Homogeneous coordinates}{section.3.5}% 23
+\BOOKMARK [2][-]{subsection.3.5.2}{World to camera coordinate system}{section.3.5}% 24
+\BOOKMARK [2][-]{subsection.3.5.3}{Camera and imaging plane coordinates}{section.3.5}% 25
+\BOOKMARK [2][-]{subsection.3.5.4}{Image plane and sensor coordinates}{section.3.5}% 26
+\BOOKMARK [2][-]{subsection.3.5.5}{World to sensor coordinates}{section.3.5}% 27
+\BOOKMARK [1][-]{section.3.6}{Distortion}{chapter.3}% 28
+\BOOKMARK [2][-]{subsection.3.6.1}{Spherical distortion}{section.3.6}% 29
+\BOOKMARK [2][-]{subsection.3.6.2}{Coma distortion}{section.3.6}% 30
+\BOOKMARK [2][-]{subsection.3.6.3}{Astigmatism}{section.3.6}% 31
+\BOOKMARK [2][-]{subsection.3.6.4}{Curvature of field}{section.3.6}% 32
+\BOOKMARK [2][-]{subsection.3.6.5}{Linear}{section.3.6}% 33
+\BOOKMARK [2][-]{subsection.3.6.6}{Radial}{section.3.6}% 34
+\BOOKMARK [2][-]{subsection.3.6.7}{De-centering}{section.3.6}% 35
+\BOOKMARK [1][-]{section.3.7}{Calibration}{chapter.3}% 36
+\BOOKMARK [2][-]{subsection.3.7.1}{Inverse problem}{section.3.7}% 37
+\BOOKMARK [2][-]{subsection.3.7.2}{Calibration plate}{section.3.7}% 38
+\BOOKMARK [2][-]{subsection.3.7.3}{Homography}{section.3.7}% 39
+\BOOKMARK [2][-]{subsection.3.7.4}{Absolute conic}{section.3.7}% 40
+\BOOKMARK [2][-]{subsection.3.7.5}{Constraints on intrinsic parameters}{section.3.7}% 41
+\BOOKMARK [2][-]{subsection.3.7.6}{Intrinsic parameters and the absolute conic}{section.3.7}% 42
+\BOOKMARK [1][-]{section.3.8}{Displacement fields}{chapter.3}% 43
+\BOOKMARK [2][-]{subsection.3.8.1}{DIC displacement fields}{section.3.8}% 44
+\BOOKMARK [2][-]{subsection.3.8.2}{DVC displacement fields}{section.3.8}% 45
+\BOOKMARK [0][-]{chapter.4}{Objectives}{}% 46
+\BOOKMARK [1][-]{section.4.1}{Literature review}{chapter.4}% 47
+\BOOKMARK [1][-]{section.4.2}{Framework and preliminary backend code}{chapter.4}% 48
+\BOOKMARK [1][-]{section.4.3}{Validating the preliminary backend code}{chapter.4}% 49
+\BOOKMARK [1][-]{section.4.4}{Improve preliminary backend code}{chapter.4}% 50
+\BOOKMARK [1][-]{section.4.5}{Creating the GUI}{chapter.4}% 51
+\BOOKMARK [1][-]{section.4.6}{Validate the program}{chapter.4}% 52
+\BOOKMARK [0][-]{chapter.5}{Scope}{}% 53
+\BOOKMARK [0][-]{chapter.6}{Research planning}{}% 54
+\BOOKMARK [1][-]{section.6.1}{Literature review}{chapter.6}% 55
+\BOOKMARK [1][-]{section.6.2}{DIC framework}{chapter.6}% 56
+\BOOKMARK [1][-]{section.6.3}{Program the backend}{chapter.6}% 57
+\BOOKMARK [1][-]{section.6.4}{Validate the backend}{chapter.6}% 58
+\BOOKMARK [1][-]{section.6.5}{Specimen design}{chapter.6}% 59
+\BOOKMARK [1][-]{section.6.6}{Improve backend}{chapter.6}% 60
+\BOOKMARK [1][-]{section.6.7}{Create the GUI}{chapter.6}% 61
+\BOOKMARK [1][-]{section.6.8}{Validate the program}{chapter.6}% 62
+\BOOKMARK [1][-]{section.6.9}{Write up thesis}{chapter.6}% 63
+\BOOKMARK [0][-]{chapter.7}{Budget}{}% 64
+\BOOKMARK [0][-]{chapter.8}{Time-frame}{}% 65
+\BOOKMARK [0][-]{chapter.9}{Conclusion}{}% 66
+\BOOKMARK [0][-]{section*.57}{Bibliography}{}% 67

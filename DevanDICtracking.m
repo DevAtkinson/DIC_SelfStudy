@@ -211,3 +211,5 @@ end
 %resources
 %Advancement of Optical Methods in Experimental Mechanics, Volume 3
 %http://www.ncorr.com/index.php/dic-algorithms#3_5
+
+% http://geoserver.ing.puc.cl/info/docencia/ice1603/DIC/Correlation_Tracking_Guide_2010.htm  - DIC tracking program for matlab

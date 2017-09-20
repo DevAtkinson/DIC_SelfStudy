@@ -38,6 +38,17 @@ function callfilePurdue()
 
 	meshcompare(im2double(II{1}),FF)
 	meshcompare(II{1},II{2})
+
+	[r,c]=size(FF);
+	for i=1:r
+		for j=1:c
+			thing(i,j)=(im2double(II{1}(i,j))-FF(i,j))/im2double(II{1}(i,j));
+		end
+	end
+	figure
+	surf(thing)
+	figure
+	surf(II{1})
 end
 
 

@@ -1,0 +1,908 @@
+\documentclass[[12pt,oneside,openany,a4paper, %... Layout
+english, %... Global lang drivers{}
+masters-t, goldenblock]{usthesis} 
+\usepackage{graphicx}
+\usepackage[colorinlistoftodos,prependcaption,textsize=small,disable]{todonotes}
+\usepackage{pgfgantt}
+\usepackage{float} %so that it can use the 'f' float option
+\usepackage{pdflscape} %allow you to make landscape pages
+\usepackage{amsmath}
+\newcommand*\mean[1]{\bar{#1}} % to create an overbar for symbols
+% \usepackage{cite}
+\usepackage{soul}
+\usepackage{amssymb}
+\usepackage{bm}
+\usepackage{standalone}
+\usepackage{preview}
+\usepackage{mathtools}
+\usepackage{pdfpages}
+% \usepackage[sort&compress]{natbib} %able to cite 2 reference at once
+\usepackage{cite}
+% \usepackage{gensymb} %for degree symbol
+% \usepackage{hyperref} %to hyperlink the equations
+
+\newganttlinktype{drur}{
+\ganttsetstartanchor{on bottom=0.75}
+\ganttsetendanchor{on left}
+\draw [/pgfgantt/link]
+% first segment (down)
+(\xLeft, \yUpper) --
+% second segment (right)
+(\xLeft, \yUpper -
+\ganttvalueof{link bulge} * \ganttvalueof{y unit chart}) --
+% link label
+node [pos=.5, /pgfgantt/link label anchor] {\ganttlinklabel}
+% third segment (up)
+($(\xLeft,
+\yUpper -
+\ganttvalueof{link bulge} * \ganttvalueof{y unit chart})!%
+\ganttvalueof{link mid}!%
+(\xRight,
+\yUpper -
+\ganttvalueof{link bulge} * \ganttvalueof{y unit chart})$) --
+% last segment (right again)
+($(\xLeft, \yLower)!%
+\ganttvalueof{link mid}!%
+(\xRight, \yLower)$) --
+(\xRight, \yLower);
+}
+
+\newganttlinktype{rdldr*}{%
+  \draw [/pgfgantt/link]
+    (\xLeft, \yUpper) --
+    (\xLeft + \ganttvalueof{link bulge 1} * \ganttvalueof{x unit},
+      \yUpper) --
+    ($(\xLeft + \ganttvalueof{link bulge 1} * \ganttvalueof{x unit},
+      \yUpper)!%
+      \ganttvalueof{link mid}!%
+      (\xLeft + \ganttvalueof{link bulge 1} * \ganttvalueof{x unit},
+      \yLower)$) --
+    ($(\xRight - \ganttvalueof{link bulge 2} * \ganttvalueof{x unit},
+      \yUpper)!%
+      \ganttvalueof{link mid}!%
+      (\xRight - \ganttvalueof{link bulge 2} * \ganttvalueof{x unit},
+      \yLower)$) --
+    (\xRight - \ganttvalueof{link bulge 2} * \ganttvalueof{x unit},
+      \yLower) --
+    (\xRight, \yLower);%
+}
+\ganttset{
+  link bulge 1/.link=/pgfgantt/link bulge,
+  link bulge 2/.link=/pgfgantt/link bulge}
+
+\begin{document}
+\includepdf{Cover.pdf}
+\includepdf{TitlePage.pdf}
+\includepdf{plagiarism.pdf}
+\chapter*{Abstract}
+Digital Image Correlation (DIC) and Digital Volume Correlation (DVC) are becoming widely used tools, in the field of material science, to measure the displacements and deformations of specimens. However the high cost of commercial DIC and DVC software and the limited control offered over the correlation process in both commercial and open-source software limits its widespread adoption. This paper proposes a project which aims to create a Matlab based program capable of performing 2D DIC and DVC on a given set of images while allowing the user control over the correlation process. It is hypothesised that the different DIC algorithms use different methods to perform the same tasks in the correlation process. Thus by analysing these algorithms it is possible to combine these different methods into one program which will allow the user to select which methods to use for the various correlation tasks. If successful, this project will produce a freely available program, which offers many of the correlation methods of the different DIC algorithms, so that users will be able to perform in depth DIC and DVC analyses.
+
+% which allows users full control over the correlation process 
+
+% This project primarily consists of researching different DIC algorithms to determine the various methods of performing correlation and incorporating these methods into the program so that the user can choose which to use.
+
+
+
+%  This project is motivated by the lack of freely available DIC software which allows the user to control the correlation process. This software is intended to combine most of the 2D DIC algorithms that are beneficial to material science applications into a single code. The successful completion of this project  will allow researchers of material science a comprehensive tool to determine specimen deformation from images taken of the specimen.
+
+\tableofcontents
+\listoffigures
+\chapter{Introduction}
+\section{Background}
+Digital Image Correlation (DIC) and Digital Volume Correlation (DVC) fall into the discipline of computer vision which aims to extract quantifiable information from images. This quantifiable information that DIC extracts is the optical flow that occurs between two images. It is capable of relating this optical flow to the displacements and deformations of the physical objects captured in the images. Thus it constitutes a tool for determining the displacements and deformations of 3D objects from images taken of these objects. Since its introduction its has found widespread use in many applications including measuring vein deformations, aerospace testing and obstacle avoidance for unmanned aerial vehicles to name a few.
+
+Although there are other optical flow techniques; DIC and DVC are the most accurate of these methods which has allowed them to be successfully used in the field of material science where high accuracy is important. Material science mainly focuses on quantifying the characteristics of materials and using these quantified characteristics to predict material behaviour. These quantified characteristics are referred to as material properties which serve as parameters in constitutive equations. A constitutive equation is a mathematical relations which approximates the response of a material, such as deformation, to external stimuli, such as a force; where the material property determines the degree of the response of the material.
+
+Thus these constitutive equations mathematically define the material properties such that they can be quantified. These constitutive equations and material properties can be used to predict the behaviour of a component to an external force that the component is expected to withstand during its use. The resulting behaviour that is predicted can then be used to determine whether the component is susceptible to failure during its intended use case.
+
+However accurate material properties are required in order to reliably predict the response of a component to external stimuli. Mechanical material properties are determined by applying a force to a specimen, made from a specific material, and measuring the displacements or deformations that occur. Then these forces and resulting displacements or deformations are substituted into the constitutive equations so that the value of the mechanical material property can be solved for.
+
+
+ % which are essentially parameters that define the degree of response of a material, usually in terms of deformation, to a disturbance applied to the material such as a force. Thus these material properties can be used to determine whether a component, that is being designed, will fail when it is exposed to the loads anticipated during its use.
+
+% However DIC and DVC are the most accurate optical flow techniques and as such have found great success in the field of material science where accuracy on the order of 
+
+% However this optical flow measurement method is the most accurate of the available methods which is specifically advantageous for material science applications.
+
+% However one of its most successful applications is in the field of material science. 
+
+%  Material science mainly focuses on quantifying the characteristics of materials and using these quantified characteristics to predict material behaviour. These quantified characteristics are referred to as material properties which are essentially parameters that define the degree of response of a material, usually in terms of deformation, to a disturbance applied to the material such as a force. Thus these material properties can be used to determine whether a component, that is being designed, will fail when it is exposed to the loads anticipated during its use.
+
+% Mechanical material properties relate the deformation experienced by a material to the forces applied to the material using a mathematical relationship which defines the material property. Subsequently these material properties are determined by applying a force to a specimen, made from a specific material, and measuring the displacements or deformations that occur. Then these forces and resulting displacements or deformations are substituted into the mathematical relations so that the value of the material property can be solved for.
+
+Therefore DIC is applied in the field of material science as a tool for measuring the displacements and deformations of specimens as they are being loaded. Then these displacements and deformations are used to determine material properties. Other methods of measuring displacements and deformations exist however DIC offers advantages over these methods as is discussed in the next section.
+
+This project focuses on researching DIC and DVC with the goal of creating Matlab program capable of determining the displacements and deformations of specimens from images captured of the specimens. The program is specifically aimed at material science applications and is intended to provide the user with full control over the correlation process. Thus the program is intended to become an open-source program which unifies multiple methods of performing correlation so that the user can choose the correlation configuration that suites them best or edit and create their own. This is valuable in the DIC and DVC community since currently limited software packages offer this functionality.
+
+% which allows the user to change the program and have full control over the correlation process which is not currently offered by most software currently available.
+
+% This is important because all current DIC and DVC algorithms offer limit control of the correlation process and their code is not editable so 
+
+This proposal outlines the motivation behind this project and the problem to be solved. Objectives have then been proposed based on this and a research plan has been developed around these objectives. A time-line for the research plan and a budget are also provided. %A brief literature review on DIC is also provided for completeness.
+
+\section{Motivation}
+In order for the predicted material response to be reliable the material properties used must be accurate. However most conventional methods of measuring displacement and deformation can only do so at a specific point on the specimen. Thus this local measurement needs to be representative of what is happening over the whole material for it to provide a means of accurately determining a material property.
+
+As such well developed standards for determining material properties have been created which document the experiments used to determine these properties. These standards place strict conditions on the specimens used, the measurement techniques employed and the calculations involved in determining material properties. The specimen is designed in such a way that the material property under investigation plays a significant role in the deformation and the measurement technique is employed at a location on the specimen which reliably represents the response of the material as a whole.
+
+Although these standards provide reliable results they require multiple tests to ensure a consistency in the results, they usually require specimens of considerable size and only one material property can be determined per an experiment. These shortcomings arise due to the limitation of the conventional displacement and deformation measurement techniques employed.
+
+In contrast DIC and DVC are full-field measurement techniques which means that they provide displacement and deformation data across the full-field of the specimen. This means displacement and deformation data over the whole surface (DIC) or whole volume (DVC) within the field of view. This is significant since it allows more complex methods of determining material properties by using full-field deformation data to be used. These methods of material property determination are attractive because they can determine more than one material property from a single experiment if the specimen is designed well. For example Gr\'{e}diac \cite{grediac} used DIC in conjunction with the Virtual Fields Method to determine multiple material properties of a composite from a single experiment.
+
+Furthermore since DIC only requires images of the specimen to be taken during the experiment it is classified as a non-contact measurement method. This is advantageous since it allows this method of measurement to be used even when the specimen is exposed to a harsh environment during the test. For example if the specimen is exposed to high temperatures in a furnace then images can still be captured through a window.
+
+Additionally, since these alternative methods of material property determination are capable of determining material properties using a wide range of specimen sizes and shapes, there has been much interest in using it to quantify the condition of operating components so that the failure of these components can be avoided \cite{conradiecharacterising}. This is done by cutting a small piece of material from the component and testing it to determine its material properties. These material properties are then compared to the component's original material properties to determine how the condition of the component has deteriorated during its use. This research is being done within the Stellenbosch University's material science research group to help Eskom analyse the current working condition of their power stations so that shut-downs due to maintenance can be minimized.
+
+% With these alternative methods of material property determination it is possible to determine material properties using a wide variety of specimen sizes and shapes. This has lead interest in using DIC to determine material properties of operating components by cutting a small piece of material from the components and testing it to determine its material properties. These material properties are then compared to the components original material properties to determine how the condition of the component has deteriorated during its use. This is then used to predict how much longer the component can be used before its failure becomes likely.
+
+Thus it is clear that DIC offers many advantages in the field of material science which is why it is becoming so widely adopted as a measurement technique.
+
+\chapter{Problem statement}
+The rapid improvement in performance of computers and cameras with decreasing costs has made the necessary equipment for DIC more accessible. This coupled with the continuous improvement of DIC algorithms over the last 30 years, since its introduction, would suggest that this tool for displacement and deformation measurement shall become more widely adopted and accepted.
+
+However there has been factors that have limited its use chief among which is the high cost of commercial software which puts it out of the reach of many research institutions and businesses that would otherwise benefit from its use. Open-source software is available but it has limitations in that the algorithm is set up in a specific way which cannot be altered. For example Ncorr (open-source DIC software) interpolates using a spline function and the user cannot use any other method. 
+
+This has caused users to view DIC and DVC as a sort of black box over which one has limited control. This is disadvantageous since it prevents users from developing a deeper understanding of DIC and DVC which would have otherwise allowed them to make better use of the tool. It also brings the reliability of the displacement results into question since how can the displacement and deformation results be trusted if the correlation method used is unknown.
+
+Control over the correlation process refers to being able to choose what method is used to perform a specific task of the correlation process. The different algorithms that have been proposed over the last 30 years differ predominantly as a result of them using different methods to perform these specific tasks of the correlation process. Thus, by creating a code that allows a user to choose from the different methods of performing the correlation tasks, the code will essentially be able to
+incorporate many of the correlation codes into one. Some of the common algorithms to perform correlation are Lucas-Kanade \cite{lucas1981iterative}, Farneb\"{a}ck \cite{farneback2003two} and Uras \cite{uras1988computational}.
+
+Control over the correlation process is important since different algorithms perform better in certain situations since many algorithms involve a trade-off between efficiency and accuracy. Furthermore parameters that control the implementation of the algorithm such as subset size, allowable subset deformations and interpolation strategy can also have a significant impact on the results.
+
+Thus it can be seen that there is a need for a freely available DIC program which offers multiple DIC correlation options and allows the user to control the parameters that affect the implementation of the chosen algorithm.
+
+
+
+
+
+
+
+
+
+
+% Additionally since they use deformations sampled from many points across the specimens surface they offer some robustness to noise. 
+
+
+% However if DIC is employed as the measurement method for determining material properties it provides more options
+
+
+
+
+
+
+% This is done so that the specific material property under investigation plays a significant 
+
+% talk about how measurement methods are local and so strict restrictions on specimens and experiments are required for accurate results
+% then why dic avoids this
+
+% Therefore material properties must be known to a high degree of accuracy so that they can be used to reliably predict material behaviour. As such well developed standards have been created which document the experiments used to determine specific material properties. These standards place strict conditions on the specimens used, the measurement techniques employed and the calculations involved in determining material properties. This is done because the measurement methods used
+
+% which enforce strict rules for the specimens to be used, the measurement methods used and the calculations involved in determining the materiel properties.
+
+% document the methods, specimens and measurement techniques used to determine material properties.
+
+
+
+
+% Material science is focused on quantifying the behaviour of materials when exposed to certain loads 
+
+% is a method of determining the optical flow that occurs between two images.
+
+
+% Digital Image Correlation is a method of extracting displacement and deformation information of objects from images taken of the objects. As such DIC falls within the discipline of computer vision which aims to extract useful information from images. Since its introduction it has found widespread use in many applications such as measuring vein deformations, aerospace testing and obstacle avoidance for unmanned aerial vehicles to name a few. 
+
+% It has also been successfully applied to the field of material science in order to measure material properties. Material properties are essentially the characteristics of materials quantified. They are used to predict how a material will behave when subjected to a certain loading case. This allows one to determine whether a component is safe from failure when subjected to loads that are expected during the components use.
+
+
+% It has also been applied in the field of material science as a means of measuring the deformation of materials when subjected to loads. This deformation data and the loads applied are then used to calculate material properties.s and the loads applied are used to calculate material properties.
+
+
+% The discipline of Mechanical Engineering relies heavily on the use of material properties. Material properties are simply the characteristics of materials quantified. These quantified characteristics are used to predict the behaviour of materials when subjected to specific load cases so that the failure of a component can be predicted during the design stage.
+
+% Material properties are used to predict the behaviour of components under certain loading situations
+
+%  mechanical properties of materials to predict the behaviour of components when subjected to loads. This allows Mechanical Engineers to design a component knowing that it will not fail under its intended use case. As such it is clear that these material properties need to be determined to a high degree of accuracy 
+
+
+% Digital Image Correlation (DIC) is a method used to accurately calculate displacement, deformation and optical flow that occurs between two images. As such DIC falls within the discipline of computer vision which aims to extract useful information from images. Since its introduction in \todo{research first occurrence} it has found widespread use in many applications such as measuring vein deformations, obstacle avoidance for unmanned aerial vehicles and aerospace testing. This project focuses primarily on the use of DIC in material science for material testing.
+
+% Over the last \hl{30} years the capabilities of DIC have been steadily improving, as more sophisticated algorithms have been developed, to the point where nowadays displacements to sub-pixel accuracy can be determined. As a result DIC has become very attractive for use within material science to measure the displacement and deformation of test specimens as the are loaded.
+
+% DIC holds many benefits for applications in material science chief among which is that it provides full-field displacement information of the specimen. In contrast most conventional methods only measure displacement or deformation at specified points on the specimen. Full-field displacement data is beneficial because it enables the response of the specimen as a whole to be analysed which enables more complex material behaviour to be investigated. It also allows for new methods of extracting material properties based on full-field displacement data such as the virtual fields method and determining fracture toughness from displacements around the crack tip.
+
+% Additionally it is a non-contact method of measurement since only images of the specimen need to be taken. As such it does not alter the material properties of the material like some measurement methods can and it allows the specimen to be exposed to harsh environments while still being able to measure displacements as long as images of the specimen can be taken.
+
+% Furthermore the deformations solved for can be specified in such a way that they are the same deformations that describe the strains of a material. This means that determining the displacements and deformations of a specimen automatically determines the strains. Lastly DIC can be used to measure on a large or small scale as long as an appropriate camera system is available.
+
+% It is clear that DIC holds much potential for use in material science however there are issues that are holding back its widespread adoption. The main problem at the moment is the cost of commercial DIC software which is often too high for most research institutions within South Africa. Opensource software is available however the validity of the results is not guaranteed.
+
+% The issue with both commercial and opensource software currently available is that they offer limited choice. Since its conception many DIC algorithms have been developed over the years which has brought about improvements in performance and capabilities. Furthermore each algorithm can be implemented in a multitude of ways based on parameters such as correlation criteria, subset size, allowable deformations and interpolation scheme. The selection of these parameters can greatly affect the results of the algorithm in certain situations.
+
+% Therefore commercial and opensource software is limiting in that it often does not allow the used to select the correlation algorithm type and furthermore does not allow control over many of the parameters that affect how the algorithm is implemented.
+
+% Additionally there are two main types of DIC. Subset based DIC which operates only on a portion of the image at a time and global DIC which works on the whole image at once. Most commercial software only offers the choice of subset based DIC since it is usually more appropriate for material science applications. In this project global DIC is to be investigated since it offers an interesting incorporation of material models into the DIC process.
+
+
+
+% allow user select parameters best for their situation - since parameters affect results
+
+% many algorithms 
+% many way of applying each algorithm
+% commercial expensive and black box
+% opensource offer more choice but not enough
+
+
+
+
+
+% Digital Image Correlation (DIC) falls within the field of computer vision which is aimed at extracting useful information from images. DIC specifically attempts to determine the displacement of a pattern from one image to another. In doing so the motion of an object can be determined if the camera remains stationary.
+
+% Since its conception 30 years ago \todo{ref} DIC has been developing steadily to the point where nowadays there are multiple algorithms available to perform DIC
+
+%  is a method used to determine the displacement of a pattern from one image to another. In doing so the motion of an object can be determined from images captured of the object. It falls within the field of computer vision which involves the extraction of useful information from images. This project is specifically concerned with the use of DIC within the field of material science for measuring displacements of materials when subjected to loads.
+
+% Since its conception 30 years ago \todo{reference} the capabilities of DIC have increased steadily as new algorithms have been developed. Today subpixel displacements can be calculated to a high degree of accuracy which is what enables it to be used within the field of material science.
+
+
+% importance of DIC - enable understanding of more complex material behaviour 
+% discipline of computer vision
+% DIC in material science application
+% steady improvement over last 30 years
+% computers and cameras improved and cheaper over last 30 years
+% non contact method
+% fullfield displacement
+% many algorithms developed for it
+% best algorithm depend on situation
+
+
+% Computers have altered human life significantly since their conception. They have brought about drastic improvements in many industries ranging from the financial industry to healthcare. In mechanical engineering they have increased the degree to which we can understand and predict the way designs of structures will behave.
+
+\input{Proposal_lit_review}
+
+
+\chapter{Objectives}
+The main aim for this project is to create a unifying program which is capable performing 2D Digital Image Correlation (DIC) or Digital Volume Correlation (DVC) on a given set of images while allowing the user full control over what methods are used to perform each task during the correlation process. The program is to consist of a basic Graphical User Interface (GUI) and a backend which will handle calibration and correlation. The focus of this project is on the backend.
+
+\section{Literature review}
+Conduct an in-depth literature review on 2D subset based DIC and DVC. The purpose of this is to obtain a good understanding of the overall calibration and correlation processes involved in gradient-descent, subset based DIC and how these are related to DVC. In doing so special attention will be paid as to how the various DIC algorithms perform the same tasks in the correlation process using different methods. It is these different methods that are to be included in the program as options for how the correlation process can be controlled by the user.
+
+\section{Framework and preliminary backend code}
+The next objective is to use the knowledge gained from the literature review to design a framework for how the backend will perform 2D gradient-descent, subset based DIC. This framework will focus on how the different tasks of the correlation process can be separated so that modular code for each method of performing these tasks, identified in the literature review, can be interchanged to perform correlation. This will form the basis of how the user will be capable of controlling how the correlation process is performed.
+
+Once a good framework has been designed the various methods of performing the tasks of the correlation process will be broken down into programmable functions so that a code can be created for each in Matlab. Then these codes will be connected according to the framework to form a first version of the backend of the program for DIC applications.
+
+Thereafter a framework will be designed for DVC which will involve how the DIC framework can be changed to incorporate an extra dimension in the analysis. This framework will then be used to create code for the backend which enables DVC analysis to be performed.
+
+\section{Validating the preliminary backend code}
+Once the preliminary backend code has been completed it will be tested to identify bugs and problems. Image sets from previous DIC and DVC experiments will be analysed using this preliminary code to determine displacements. These calculated displacements will be compared to the displacements calculated by the commercial DIC software (LaVison) so that areas of poor correlation can be identified. Simpler experiments such as basic tension tests will be used first so that basic issues and bugs in the code can be identified and fixed. Thereafter more complex experiments such as specimens containing cracks will be used to see what problems arise in the code.
+
+\section{Improve preliminary backend code}
+Problems that arise in the preliminary backend code must be fixed. First problems that affect the execution of the code are to be fixed. Thereafter issues specific to material science applications are to be investigated. These are likely to include difficulty in dealing with discontinuous displacement fields, high strain gradients, applied masks and noise robustness. To improve the codes ability with regards to these types of problems additional functions will need to be designed such that they deal with these issues. Once this objective is complete a good backend for 2D DIC and DVC should result.
+
+% \section{Explore new subset matching techniques}
+% New and alternative subset matching techniques are to be explored to determine whether they would be beneficial in material science applications.
+
+\section{Creating the GUI}
+With the backend functioning properly a framework for communication between the GUI and backend is to be designed. This should be designed in such a way that it will still allow users to communicate directly with the backend without a need for the GUI. Once the framework is finished the backend will be edited to conform to this framework and the GUI layout will be designed according to what codes are available to perform the different correlation tasks and what input parameters are needed for these codes. Thereafter the GUI will be coded in Matlab according to this design.
+
+\section{Validate the program}
+Validate the program by quantifying its performance against that of commercial DIC software. In order for the proposed program to be of use it needs to perform at a similar level to that of commercial software. Two types of tests will be used for this. First generated speckle patterns will be deformed according to known displacement fields and the images of these will be correlated using both the proposed and commercial software. The similarity between the calculated displacement fields and the known displacement fields that were applied will give an indication of the performance. 
+
+The second test will involve deforming specimens as images are captured using the commercial DIC system. These images will then be analysed using both the commercial and proposed DIC program. Finally the results of these two will be compared in order to determine whether the proposed program performs to an acceptable level.
+
+
+
+% Develop a solid framework and corresponding code which allows full control over a basic 2D DIC algorithm.
+% This code should allow full control over what methods are used to complete each aspect of the correlation process and
+% the values of parameters that affect how the algorithm is implemented. This is done so that a solid starting point for the
+% backend of the software is created.
+
+% Through this the options that affect how the DIC algorithm is implemented, such as the interpolation scheme, can be identified. As the algorithms proposed by various papers are studied; the difference between these modified algorithms and the basic algorithm proposed by Sutton [1] will give an indication of what aspects of the basic algorithm can be performed in different ways. This will help identify what options should be available in the software.
+
+% Key objectives have been identified which if achieved will ensure the main aim is achieved:
+% 1. Conduct an in-depth literature review on Digital Image Correlation.
+% The purpose of this is to obtain a good understanding of the overall calibration and correlation processes involved in
+% gradient descent, subset based DIC. Through this the options that affect how the DIC algorithm is implemented, such as
+% the interpolation scheme, can be identified. As the algorithms proposed by various papers are studied; the difference
+% between these modified algorithms and the basic algorithm proposed by Sutton [1] will give an indication of what aspects
+% of the basic algorithm can be performed in different ways. This will help identify what options should be available in the
+% software.
+
+% 2. Develop a solid framework and corresponding code which allows full control over a basic 2D DIC algorithm.
+% This code should allow full control over what methods are used to complete each aspect of the correlation process and
+% the values of parameters that affect how the algorithm is implemented. This is done so that a solid starting point for the
+% backend of the software is created.
+
+% 3. Validate this developed code using experimental data.
+% This is done in order to ensure that the code is capable of performing DIC in a real world situation where unexpected
+% problems can arise. As a result of attempting to perform DIC on images of actual experiments; the issues in the code and
+% areas that need improvement will become apparent.
+
+% 4. Improve the codes ability and robustness for material science applications.
+% The issues that arise form the validation tests of objective 3 need to be solved in order for the code to become functional.
+% Additional shortfalls specific to material science applications that arise during the test, such as difficulty in dealing with
+% discontinuities, high strain gradients, artefacts and noise, are to be investigated in order to develop codes that deal with
+% these.
+
+% 5. Extend the code to DVC and develop the GUI.
+% Once the 2D DIC code is fully functional it is to be modified to perform DVC. Once this is completed the backend is fully
+% operational and the GUI can be designed and programmed so that users can easily control the backend.
+
+% 6. Validate the software by quantifying its performance against that of commercial DIC software.
+% In order for the proposed software to be of use it needs to perform at a similar level to that of commercial software. Two
+% types of tests will be used for this. First generated speckle patterns will be deformed according to known displacement
+% fields and the images of these will be correlated using both the proposed and commercial software. The similarity between
+% the calculated displacement fields and the known displacement fields that were applied will give an indication of the
+% performance. The second test will involve deforming specimens as images are captured using the commercial DIC
+% system. These images will then be analysed using both the commercial and proposed DIC software. Finally the results of
+% these two will be compared in order to determine whether the proposed software performs to an acceptable level.
+
+% The overall objective of this project is to create a software package that is capable of performing multiple DIC algorithms on a set of images to determine the deformations that the specimens underwent as the images were taken.
+
+% \begin{itemize}
+% 	\item This project will involve the completion of a comprehensive literature review focusing on DIC.
+% 	\item A unifying software is to be created which can perform local subset based 2D DIC and DVC on the appropriate images via multiple DIC algorithms. Additionally the user will be able to control how these algorithms are applied to the images. This is to include subset warp function, subset size, step size, interpolation scheme.
+% 	\item Research into programming either a FEM based global DIC or using neural networks to solve for underlying displacement fields will be conducted. The purpose of this is to provide an alternative technique which is substantially different from the other algorithms offered so that it can be used in situations where its benefits offer an advantage over the more commonly used subset based methods.
+% 	\item The performance of the algorithms contained within the software are to be quantified against the performance of a commercial DIC software (LaVision). The purpose of this is to validate the software to prove it can be reliably used in material science applications.
+% \end{itemize}
+
+% \chapter{Objectives}
+% Digital Image Correlation is a method that enables the position of an object in an image to be tracked from one image to the next. If the camera remains stationary while images are taken then the difference in position of the object from one image to the next can be used to determine its displacement. Thus images taken of an object in motion can be used to determine the displacement of the object. 
+
+% Over the last 30 years Digital Image Correlation (DIC) has been developing at a steady rate. This, coupled with the increase in resolution of digital cameras and the improved performance of computers according to Moore's law, have made it possible to calculate displacements to a high degree accuracy within a reasonable computation time.
+
+% Furthermore, since only images need to be taken of the object of interest, DIC enables displacement measurement without making contact with the object. This enables DIC to be used in situations where the object is exposed to harsh environments and DIC can still be used to measure displacements.
+
+% As a result DIC has been successfully applied within material science as a method of measuring displacements of test specimens as they are deformed. The use of DIC for material science applications is further beneficial in the fact that only images need to be taken of the specimen in order to determine displacements. Thus DIC is a non-contact method of measuring the displacements. This is advantageous over conventional methods of displacement measurement which need to be in contact with the specimen since being in contact with the specimen can cause the material behaviour to change in certain circumstances. Additionally the specimen can be exposed to harsh environments and a camera can still record images from a safe location such as through a window or behind a shield.
+
+% Furthermore DIC calculates the displacement over the whole surface of the object. That is it calculates the displacement for many points on the surface of the specimen making full-field displacement data available. This is advantageous since it allows more complex material behaviour to be investigated.
+
+% Thus it is clear that DIC holds many benefits for material science applications. Unfortunately commercial DIC software is expensive. DIC systems can cost in excess of R 500 000 putting it out of the reach of many research institutions. Opensource software is available but the validity of the results is not guaranteed.
+
+% However the issue goes beyond this. Software currently available for DIC analysis, commercial or opensource, don't provide the user with sufficient control over the correlation process. The displacements calculated can be heavily dependent on the algorithm used, the convergence criteria selected, the subset size and the allowable subset deformations.
+
+% As a result there are currently multiple algorithms available to (software usually only offer a couple correlation algorithm options)
+
+% commercial expensive
+% lack control over algorithm 
+% don't know what algorithm is doing- black box
+% more uses for DIC
+% hold back research
+% allows better understanding of material characteristics
+% DIC offers a great learning tool for material science
+% cameras and computers more powerful and cheaper
+
+
+% opensource:
+% ability for people use it for research purposes
+% more publications from SA
+
+
+% Many papers have shown \todo{add references of papers read} that DIC can be successfully used to measure full field displacements on the surface of objects that are subject to loads. These displacements can then be used to determine the strains and stresses over the surface of objects or through solving an inverse problem the material properties of the object can be determined \todo{reference}. It is clear that this is a powerful tool for material science research.
+
+% However since it is a relatively new and niche technology the software available commercially to perform DIC analysis is expensive and out of reach for many research institutions and business that could otherwise benefit from its use. This is unfortunate since the ever growing capabilities of DIC indicate that is is likely to become an invaluable tool in many material science applications. \todo[inline]{something about how it is a useful tool for teaching which is not possible with how much it costs, how research progress is hindered by lack of access...}
+
+% The aim of this project is to create an open-source DIC program with material science applications in mind so that researchers can make use of it if they do not have access to commercial software. The idea is to offer most of the capabilities of commercial software that is essential for material science applications at a level of accuracy and precision that is comparable to these commercial systems. The purpose is not to replace the commercial systems but to offer an attractive alternative to those who do not have access to them.
+
+% The program is to be separated into a backend which performs the calculations and the frontend which will consist of a Graphical User Interface (GUI) to allow users to control the backend. 
+% % Since it is to be open-source the backend is to be written in an freely available programming language (either python of C) so that everyone has access to it. The frontend on the other hand is to be written in Matlab since most research institutions use it for their DIC data analysis. \todo[inline]{might consider a different language once I have tried python out}
+
+% % Many DIC algorithms have been designed over the years, each having characteristic advantages and disadvantages for certain applications. As such the program is to be able to use multiple different correlation algorithms so that the user can choose the one that best suits their specific application. Additionally it is intended that the program be modular with regards to the DIC algorithms so that users can easily write their own algorithms and add them to the programs library.
+% \chapter{Objectives}
+% \begin{itemize}
+% 	\item Completion of this project should result in both a comprehensive literature study on DIC and a DIC program. The program should be capable of taking in images, process these images using on of several available DIC algorithms to determine displacements in the images. The DIC algorithms within the program are to be focused on use in material science applications.
+% 	% An in-depth literature review of DIC is to be written and the most promising DIC algorithms for material science purposes are to be identified. These algorithms will include not only subset based DIC but also global DIC. These identified algorithms will then be implemented in the DIC program to be developed.
+% 	\begin{itemize}
+% 		\item A literature review will be conducted on DIC algorithms both subset based and global DIC.
+% 		\begin{itemize}
+% 			\item Research will be conducted into DIC and DIC algorithms using articles, research papers and the internet as sources of information. As knowledge is gained it will be added to the literature review.
+% 		\end{itemize}
+% 		\item The researched DIC algorithms will be sorted into those that would be applicable in material science applications and those that are not.
+% 		\begin{itemize}
+% 			\item Once the algorithms have been researched they will be identified at beneficial for material science if they have good sub-pixel displacement accuracy, are robust to some degree, have acceptable computational requirements
+% 		\end{itemize}
+% 		\item Once a DIC algorithm has been identified as beneficial in terms of a material science application it will be coded so that it can be added to the program.
+% 		\begin{itemize}
+% 			\item Using python as a programming language the identified DIC algorithms will be coded using the research papers and articles as a guide so that they can become a part of the overall program.
+% 		\end{itemize}
+% 	\end{itemize}
+% 	\item One of the main aspects of this project is that the program itself should be opensource so that it is easily accessible. Thus the program is to be separated into a backend which will handle the correlation process and a frontend which will consist of a GUI to give the user an easy method of controlling the backend. The backend is to be programmed in a freely available programming language and it will be capable of being operated without the use of the frontend to ensure that anyone can use it. The frontend will be programmed in Matlab since it is popular amongst research institutions for DIC data analysis.
+% 	\begin{itemize}
+% 		\item The backend will most likely be written in python since it has great support for scientific computing while being popular. Research into how to program in python is to be conducted in order to be able to write the backend code.
+% 		\begin{itemize}
+% 			\item Online python learning resources will be used to obtain the basic knowledge of python. More advanced knowledge will be gained during the process of writing the DIC algorithm codes as built in functions are researched on the internet.
+% 		\end{itemize}
+% 		\item A communication method between the backend and frontend is to be designed such that the backend can be used without the frontend for those who prefer commandline interaction and so users can create their own programs to control the backend. 
+% 		\begin{itemize}
+% 			\item Research will be conducted on the ways in which programs using different programming languages can communicate with each other so that the method of communication is truly robust. Using a text file as the input to the backend will be used if no better methods are found.
+% 		\end{itemize}
+% 	\end{itemize}
+% 	\item The purpose of the program is to allow the user more control over the correlation process. This includes being able to control the subset size and geometry \todo{not sure about geometry}, the deformations that the subset can undergo, overlapping of the subsets, cost function, convergence criteria, 
+% 	\begin{itemize}
+% 		\item A framework is to be developed for how the DIC codes are to work in such a way that the above mentioned parameters are controllable across all the algorithms in the same way.
+% 		% The code to be written for the various algorithms is to be done in such a way that there exists the same level of control across all the algorithms. This requires modularity within the codes.
+% 		\begin{itemize}
+% 			\item To design this framework the parameters to be controlled will be identified. Then how these parameters affect each DIC algorithm will be investigated and the DIC codes will be written in such a way that these parameters will be part of the input to the DIC codes so that all the DIC codes communicate with the frontend in the same way with regard to the controllable parameters. As such some of the DIC codes will need to be adjusted so that all the codes are controllable in the same way.
+% 		\end{itemize}
+% 	\end{itemize}
+% 	\item The proposed program will only be of use if its performance is inline with that of commercial software. Thus the program needs to determine displacements to a degree of accuracy and precision that is comparable with that of commercial systems. Computational efficiency and runtime are not a concern in this regard.
+% 	\begin{itemize}
+% 		\item In order to achieve this objective a method for quantifying the accuracy and precision of DIC algorithms is to be created.
+% 		\begin{itemize}
+% 			\item Research is to be conducted into the way current DIC system accuracy and precision are quantified using articles, research papers and the internet as resources. With this information a quantification method will be designed. \todo{validating the quantification method?}
+% 		\end{itemize}
+% 		\item A 2D/3D stereovision camera system is to be designed and assembled for capturing images for DIC.
+% 		\begin{itemize}
+% 			\item Either buying another of the cameras already available in the research group (Rollans skripise) or researching appropriate cameras and purchasing the best option. Once cameras have been acquired a data acquisition system is to be obtained to capture the images simultaneously on both cameras at the same time. \todo{sync with commercial system so all images are simultaneous}
+% 		\end{itemize}
+% 		\item Two experiments are to be designed. One will be a synthetic test that will provide the DIC programs (commercial and proposed) with generated images of known displacements and the algorithms will be assessed in terms of how close their calculated displacements are to the actual values. 
+% 		\begin{itemize}
+% 			\item A good speckle pattern will be generated and then displacements will be applied to this speckle pattern so that deformed images are obtained. A variety of deformations will be used so that the limits of the algorithms can be identified. This will likely include rotations so that the algorithms can be evaluated in terms of their ability to track rotation.
+% 			\item The image sets will be processed by all the DIC codes and the resulting displacement data will be compared to that of the known displacements to give an indication of the level of performance of the algorithms for synthetic data.
+% 			\item Ideally the quantification method will be used to provide meaningful information on the performance of the codes.
+% 			\item Problems identified with the codes, in doing these tests, will be fixed so that they perform as best as possible in the next test. 
+% 		\end{itemize}
+% 		\item The second experiment will test the algorithms in a real world situation. The Stellenbosch commercial DIC camera system and a self designed system will be used to capture images of the same specimens being deformed. These images will then be processed through the respective systems (commercial DIC and opensource) in order to compare their performance in a real world situation.
+% 		\begin{itemize}
+% 			\item A couple specimens will be designed and manufactured. The specimens are to be designed in such a way that some deform in a way that is beneficial for DIC purposes and some will be designed to deform in a way that is detrimental for DIC. This will give a good overall indication of the capabilities of the codes.
+% 			\item Specimens will be deformed as images are taken of them by the commercial DIC camera system and the in house camera system; preferably these systems will be set to capture images simultaneously so that the images of both the commercial and inhouse systems are of the specimen under the same deformation.
+% 			\item These images will be masked and processed by the commercial and proposed DIC codes to obtain displacement data. This data will be analysed using the quantification method mentioned above so that the proposed DIC codes can be compared to that of the commercial system and to each other.
+% 		\end{itemize}
+% 	\end{itemize}
+% \end{itemize}
+
+% \begin{itemize}
+% 	\item An in-depth literature review is to be conducted into DIC so that the main DIC algorithms for material science purposes can be identified and a deep understanding of the overall DIC process can be obtained.
+% 	\item The program should be a good alternative to commercial programs for material science applications with regards to both 2D and 3D stereo-vision DIC. For this to be a reality the program must have a similar performance level to that of commercial software in terms of accuracy and precision of the full field displacements.
+% 	\item Multiple DIC algorithms are available with different advantages and disadvantages. As such the program is to offer the user a choice of algorithms so that they can choose the one that suits their situation best. Thus the idea is to allow the user to have more control over the correlation process.
+% 	\item In addition to multiple algorithms being available for use; these algorithms are to be implemented in a modular way so that the user can easily create their own algorithms and add it to the programs library. \todo[inline]{not sure if this is possible yet}
+% 	\item Since the idea is to offer a good alternative to commercial software; the programs backend (which handles the calculations) is to be written in a freely available language such as python or C. The front end (the GUI) is to be written in Matlab since this is what most research institutions use to analyse DIC data.
+% 	\item An image capturing system is also to be designed so that the open-source program can be compared to the commercial software over the whole DIC process from image capturing until the calculation of displacement data. This image capturing system is to be capable of both 2D (one camera) and 3D stero-vision (two cameras) DIC.
+% 	\item A bonus objective would be to design the code to execute in an efficient manner so that it completes the correlation process in the shortest time possible. Additionally it would be ideal to structure program in such a way that parallel processing is possible so that further reduction in runtime is possible.
+% \end{itemize}
+% \section{Research design}
+
+\chapter{Scope}
+This project is limited to the aspects listed below. Note that the proposed program is not intended to capture images or perform 3D DIC.
+\begin{itemize}
+	\item Developing the backend of the program such that it is capable of performing 2D gradient descent, subset based DIC and DVC on a given set of images to output the displacements present in the images. The backend is to allow the user to select what methods are used during the correlation process.
+	\item Developing a GUI for the program that allows the user import images, set up the type of analysis, set up the configuration for the correlation process, tell the backend to perform the correlation process and display the results.
+	\item Testing the proposed program in order to validate it. The program will be tested using synthetic and real world data to determine how well it performs.
+	\item Design specimens for the experiments that are to be performed to validate the program.
+\end{itemize}
+
+\chapter{Research planning}
+The research plan consists of activities that are closely based on the objectives of the project. The activities are first described and then the time frame, requirements, outputs, cost and milestones of the activity are given.
+
+\section{Literature review}
+An in-depth literature review on 2D gradient descent, subset based DIC and DVC are to be conducted in order to develop a good understanding of how these methods work and what steps are involved in the calibration and correlation processes. DIC will be investigated first since it is the simplest type of DIC and so will be easiest in terms of learning the basic concepts. Once a good understanding of DIC is acquired research will move to DVC which is closely related to 2D DIC.
+
+As the different proposed 2D DIC algorithms are investigated special attention will be paid to the ways in which these algorithms use different methods to perform the necessary correlation tasks. Thus as the literature review is conducted a map of how the correlation process works and what tasks need to be completed during its execution will be developed. Then when the different algorithms are investigated their methods of performing these tasks will be documented and a list of the possible ways of performing each task of the correlation process will be created.
+
+\paragraph{Time frame}
+01/06/2017 - 30/08/2017
+
+\paragraph{Requirements}
+Literature material is necessary for this step. The majority of this material is easily accessible using the internet and other material can be obtained through the Stellenbosch library.
+
+\paragraph{Outputs}
+Good understanding of how 2D DIC and DVC work. A map of how the correlation process works and a list of the different methods that can be used to perform the various correlation steps.
+
+\paragraph{Cost} 
+No cost is expected to be incurred during this activity.
+
+\paragraph{Milestones}
+Gain sufficient understanding in order to start developing a framework for DIC and DVC.
+
+% \ganttbar{\small Literature review}{2017-06-01}{2017-09-30}\\
+% \ganttbar{\small DIC framework}{2017-08-02}{2017-10-10}\\
+% \ganttbar{\small Program the backend}{2017-10-11}{2017-11-30}\\
+% \ganttbar{\small Test the backend}{2017-12-01}{2017-12-30}\\
+% \ganttbar{\small Specimen design}{2018-01-01}{2018-01-08}\\
+% \ganttbar{\small Improve backend}{2018-01-09}{2018-02-28}\\
+% \ganttbar{\small Create DVC code}{2018-03-01}{2018-03-31}\\
+% \ganttbar{\small Create GUI}{2018-04-01}{2018-04-16}\\
+% \ganttbar{\small Validate the software}{2018-04-17}{2018-05-15}\\
+% \ganttbar{\small Write up thesis}{2018-05-16}{2018-08-01}\\
+
+\section{DIC framework}
+The map of the correlation tasks and the list of the different methods of performing these tasks will be used to create a framework for the DIC part of the backend of the program. First the tasks that need to be performed during correlation, the order in which these tasks need to be performed, the methods that can be used to perform these tasks and what information transfer each of these methods involve will be used to create a detailed structure of how the tasks can be arranged and connected in such a way that these different methods of performing the tasks can be used interchangeably.
+
+Thereafter each method of performing the correlation tasks will be analysed and broken down into programmable functions. The connection and communication between these functions will then be used to create a map for each method. The detailed structure of the correlation tasks and these maps for all the methods will then be combined to create a framework for the overall backend of the program. 
+
+This framework will then be used as a basis to develop a similar DVC framework. These frameworks will be similar to one another with the DVC framework basically including an extra dimension to be analysed. These two frameworks will then be combined to give the overall backend framework.
+
+The purpose of this backend framework is to break down the overall correlation problem into the straight forward functions that need to be performed. These straightforward functions are then relatively easy to program and connect together to form the backend of the program.
+
+\paragraph{Time frame}
+01/09/2017 - 10/10/2017
+
+\paragraph{Requirements}
+The map of how the correlation process works and a list of the different methods that can be used to perform the various correlation steps are needed in order to develop the framework.
+
+\paragraph{Outputs}
+A comprehensive framework for 2D DIC and DVC that allows user control over options for the correlation process.
+
+\paragraph{Cost} 
+No cost is expected to be incurred during this activity.
+
+\paragraph{Milestones}
+Complete framework for backend.
+
+\section{Program the backend}
+In this activity the functions identified in the backend framework are to be written into code. Then once code exist for all these functions the codes will be connected according to the framework to create the backend of the program. This backend is to be capable of both 2D DIC and DVC analysis.
+
+As the codes are being developed they will be tested by using synthetic tests. In these tests an image of a generated speckle pattern will be deformed according to a chosen displacement function to produce a deformed image. Then these images will be analysed using the backend and the difference between the calculated displacements will serve as a means of identifying faulty code and bugs. These issues will be fixed as they are identified.
+
+Matlab is to be used as the programming language since most research institutions use it to analyse DIC data. Thus it is reasoned that anyone who want to use DIC software which allows this level of control over the correlation algorithm is likely to have access to Matlab.
+
+\paragraph{Time frame}
+11/10/2017 - 30/11/2017
+
+\paragraph{Requirements}
+The framework for the backend is needed as an input for this activity. Additionally Matlab and a computer are required for programming purposes.
+
+\paragraph{Outputs}
+A working backend for the program coded in Matlab.
+
+\paragraph{Cost} 
+Since Matlab and a computer are provided by the university no cost are anticipated.
+
+\paragraph{Milestones}
+Create a working backend code to perform 2D DIC and DVC analysis.
+
+\section{Validate the backend}
+Once the backend is finished it will be tested on actual DIC and DVC image sets from material science experiments. The purpose of this is to identify any fundamental issues in the backend and to identify issues specific to material science applications. A list of the issues is to be created so that they can be improved on. Issues will be identified by areas of poor correlation and discrepancies between the results of the proposed program and that of the commercial software (LaVision).
+
+Various types of material science experiments will be used in order to identify as many material science related issues as possible. Anticipated issues include difficulty in dealing with displacement discontinuities, applied masks, high strain gradients and noise.
+
+Various correlation process configurations of the different methods of performing the correlation tasks will be used in order to identify which methods have the greatest impact on the results and to identify issues that arise with using certain methods.
+
+\paragraph{Time frame}
+01/12/2017 - 30/12/2017
+
+\paragraph{Requirements}
+A working backend which is created in the previous activity. Commercial DIC software which is available at Stellenbosch University. Matlab and a computer which has been provided by Stellenbosch University. Material science experiment image sets, to be analysed, which are already available on the DIC computer of the material science research group. 
+
+\paragraph{Outputs}
+A list of issues to be fixed in the backend. These issues include problems specific to material science applications. Additionally an understanding of what types of displacement fields cause the biggest issues for the backend.
+
+\paragraph{Cost} 
+All of the required equipment is already available at Stellenbosch University and so this activity is not expected to any costs.
+
+\paragraph{Milestones}
+Identify issues that need to be fixed or improved within the backend code.
+
+\section{Specimen design}
+The specimens required for validating the program are to be designed and manufactured. This is done at this stage in the project in order to allow ample time for the specimens to be manufactured so that no delays occur later in the project when time restrictions are strict. Additionally after completing the testing of the algorithms in the previous activity the displacement fields that are unfavourable for the DIC code will become apparent. The specimens can then be designed in such a way that they will produce similar displacement fields so that the DIC algorithms can be put to the test.
+
+All the specimens are to be designed such that they are loaded in tension. The standard dog-bone tension specimen is to be used as a starting point for the specimens and its geometry will be modified in order to create interesting displacement fields. An example of this would be a dog-bone specimen with a hole in the middle. FEM will be used to ensure that the proposed specimen designs will result in the desired displacement fields.
+
+\paragraph{Time frame}
+01/01/2018 - 08/01/2018
+
+\paragraph{Requirements}
+Material for the specimens. Knowledge of what displacement fields are unfavourable for the backend (obtained from previous activity). CAD software for designing the specimens which is provided by Stellenbosch University. FEM software for developing the specimen designs is provided for by Stellenbosch University.
+
+\paragraph{Outputs}
+The specimens to be tested later on in the project to validate the program.
+
+\paragraph{Cost} 
+The cost of the materials and the cost of the manufacturing the specimens. - R2000
+
+\paragraph{Milestones}
+Creation of specimen designs for manufacturing.
+
+\section{Improve backend}
+The issues identified in the backend are to now be solved. Fundamental issues will be solved first since they are specific to the codes already developed for the backend. Thereafter methods of solving issues specific to material science applications will be investigated.
+
+Once methods have been developed to improve the performance of the code in material science applications it will be tested by using the experimental image sets used to first identify issues. The the previous results will be compared to the new results to determine whether there has been an improvement.
+
+\paragraph{Time frame}
+09/01/2018 - 14/03/2018
+
+\paragraph{Requirements}
+A list of issues that have been identified in the backend.
+
+\paragraph{Outputs}
+A more robust backend code that is less susceptible to errors when being used for material science applications.
+
+\paragraph{Cost} 
+This activity involves no cost.
+
+\paragraph{Milestones}
+Produce a backend capable of performing 2D DIC and DVC analysis for material science applications.
+
+\section{Create the GUI}
+A GUI is to be created to allow the user to easily control the backend without the need to use command prompt. Before work on the GUI is started a method of communication between the GUI and backend is to be designed. This method of communication should be flexible so that the user can still make use of the backend without the GUI if they so desire. With this method of communication finalised the backend is to be refined to conform to this communication method. This will likely only involve minor changes.
+
+Once a method of communication has been developed the GUI can be designed. The GUI layout will be designed according to the structure of the backend. That is the GUI layout is to be arranged such that the different options available for the correlation process are presented in a logical way. Once a layout has been decided upon the GUI will be programmed in Matlab. Matlab's GUI environment offers sufficient GUI elements for the creation of a GUI of this type. Finally the GUI will be connected to the backend. At this point the proposed program should be fully operational.
+
+\paragraph{Time frame}
+15/03/2018 - 15/04/2018
+
+\paragraph{Requirements}
+Fully functioning backend. A list of the correlation options to be provided; which will be included in the framework developed for the backend.
+
+\paragraph{Outputs}
+A GUI and a refined version of the backend which together form the proposed program.
+
+\paragraph{Cost} 
+No cost is expected to be incurred during this activity.
+
+\paragraph{Milestones}
+Create the final working version of the program (GUI and backend).
+
+\section{Validate the program}
+The proposed program is to be validated by comparing its performance to that of commercial software (LaVision) in two types of tests. The first test is a synthetic test similar to that used during the backend's development to check that the code operates correctly. However this time the calculated displacement fields of the various algorithms will be compared to the actual applied displacement field with the difference between the two giving an indication of the accuracy of the algorithm. 
+
+Different applied displacement fields will be used in order to identify shortcomings in the developed algorithms. This will be done by using some displacement fields which are not favourable for DIC and DVC such as those containing significant rotation, displacement discontinuities and large straining. These shortcomings are important since commercial software usually includes ways of dealing with these difficulties. Thus comparing the performance between the commercial software and
+proposed program in this regard is important.
+
+Additionally in order to evaluate how well these algorithms deal with noise a second version of the synthetic test will be conducted. In this second version noise will be added to the deformed image that is to be generated and the deviation of the results from the noise free case will be used to indicate sensitivity to noise.
+
+The second test is more representative of real world use of the program. For this test a speckle pattern is applied to each of the aforementioned specimens before securing them in a tensile testing rig. Then images are taken of the speckle pattern using the available commercial system (LaVision) as the specimen is loaded in tension. These images are then analysed using the commercial software and the proposed program in order to determine the underlying displacement fields. 
+
+The same images will be used for all the algorithms so that they can be compared solely on their correlation performance. The commercial system is used to capture images in order to give the commercial DIC software its best use case so that its results can be treated as the golden standard by which the proposed algorithms are compared. 
+
+Once these tests have been conducted the results will be used to decide whether the proposed algorithms perform acceptably well compared to the commercial software. Note that the results of the second test will be relative to the commercial software and not an absolute indication of performance.
+
+\paragraph{Time frame}
+16/04/2018 - 15/05/2018
+
+\paragraph{Requirements}
+Fully functioning version of the proposed program as created in the previous activity. Matlab, a computer and the commercial DIC software (LaVision) which are all available at Stellenbosch University. The specimens which have been designed and manufactured. A tensile test rig and a commercial DIC camera system which are already available at Stellenbosch University. Spray paint for applying speckle patterns to the specimens.
+
+\paragraph{Outputs}
+Data indicating the performance of the propose program and the commercial DIC software (LaVision) for the same tests.
+
+\paragraph{Cost} 
+Spray paint - R200
+
+\paragraph{Milestones}
+Obtain data on the performance of the proposed program.
+
+\section{Write up thesis}
+In this activity the information gained throughout this project is to be organised and broken down so that it can be reported on in the thesis. 
+
+\paragraph{Time frame}
+16/05/2018 - 01/08/2018
+
+\paragraph{Requirements}
+Literature review must be conducted prior to this. Results indicating the performance of the proposed program. Latex to write the report.
+
+\paragraph{Outputs}
+A report summarising the important aspects of the project.
+
+\paragraph{Cost} 
+Since latex is free no costs will result.
+
+\paragraph{Milestones}
+Complete the report.
+
+% First an in-depth literature review is to be conducted in order to obtain a deep understanding of the Digital Image Correlation process and to identify algorithms that are important for use in material science. Once the core algorithms have been identified codes will be written for them in such a way that these algorithms communicate with the main backend in a similar way. This will allow the algorithms to be modular so that the user can easily select which one they would rather use. Additionally these codes must allow the user to control parameters within each of the chosen core algorithms so that the user can have a large degree of control over the correlation process.
+
+% Once this is completed the main backend program will be developed in such a way that it is capable of communicating with the fontend that is to be designed. A method of using commands in a text file is likely to be the best method of choice so that the user can also control the backend directly if they so desire. Hereafter the frontend GUI is to be designed and coded.
+
+% Once the software is working properly testing can start to identify problems and areas that need improvement. In order to validate the program a test needs to be devised that evaluates the accuracy and precision of the program compared to that of the commercial software. This is likely to cover such issues as sensitivity to rotation and rigid body motion, how the program performs in calculating displacements near regions of discontinuity on the surface of the specimen (such as near cracks) and performance on the edge of the specimen. Additional concerns with regards to performance will be identified when conducting the literature review.
+
+% Initial testing will be done based on images generated with known displacements so that it is only the software's performance that is being analysed. After testing of this type has identified problems and these problems have been fixed; testing the program on actual images of loaded specimens can be conducted. For this testing to be possible it is necessary to design an image capturing system so that images can be taken of the specimen that is deforming. Ideally the software side of this system will form part of the main program.
+
+% For this type of testing specimens should be designed so that they exhibit displacements that are both favourable and detrimental to DIC so that the overall performance of the program in multiple situations can be determined. It is these results that will indicate whether the program is successful in its objective of being comparable in terms of accuracy and precision with commercial software.
+
+% Once the program is performing as desired it can be re-evaluated to see whether it could be implemented in a more efficient manner or if it could be implemented in such a way that parallel processing is possible so that it takes less time to complete a correlation process.
+
+% \chapter{Resources required}
+% The following resources are required in order to complete this project.
+% \begin{itemize}
+% 	\item A tensile testing rig is required in order to complete the second validation test. An MTS tensile test rig is available in the Stellenbosch labs which is fully capable of performing the proposed tests. Additionally the necessary clamps for tension specimens are also available.
+% 	\item Specimens must be designed and manufactured. The specimens are to be designed on CAD software which is available at Stellenbosch University. The specimens can then be manufactured either in the Stellenbosch Mechanical Engineering workshop or specimen manufacturing can be outsourced to an appropriate supplier. The choice of which manufacturer will be based on material choice and required tolerances. FEM software used for designing the specimens is also available from Stellenbosch University. The materials for the specimens will be provided by the chosen manufacturer.
+% 	\item Matlab and a computer is necessary for programming the software. Matlab is available at Stellenbosch University and a computer has been provided by Stellenbosch University.
+% 	\item A commercial DIC system is necessary for the validation tests and for conducting the experiments on the designed specimens. A LaVision commercial DIC system (camera and software) is available from Stellenbosch University.
+% 	\item Spray paint is needed in order to apply the speckle patterns to the specimens. This paint will be purchased when it is needed.
+% 	\item Literature resources are required for the literature review. The Stellenbosch University library provides access to most literature resources that will be needed.
+% 	\item Latex is to be used to write the thesis report. This software is freely available for use.
+% 	\item Experimental data is required for testing the backend to find issues. Old experimental data is available from the Materials Engineering research group at Stellenbosch University.
+% \end{itemize}
+
+\chapter{Budget}
+The table below provides an outline of the expected costs for this project organised according to the activities in which the expenses are expected to occur. Since most of the resources required for the completion of this project are already available from Stellenbosch University the overall cost of the project is rather low.
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+ Activity & Resource & Cost \\ 
+ \hline
+ \hline
+ Literature review & Internet and research papers & 0 \\
+ \hline
+ DIC framework & NA & 0\\
+ \hline
+ Program backend & Matlab & 0\\
+ \hline
+ Validate the backend & Commercial software & 0\\
+  & Matlab & 0\\
+  \hline
+ Specimen design & Materials and manufacturing & 2000\\
+ & CAD software & 0\\
+ & FEM software & 0\\
+ \hline
+ Improve backend & Matlab & 0\\
+ \hline
+ Create GUI & Matlab & 0\\
+ \hline
+ Validate program & Tensile testing rig & 0\\
+ & Commercial DIC system & 0\\
+ & Spray paint & 200\\
+ \hline
+ Write up thesis & Latex & 0\\
+ % Matlab & Software necessary for programming & - \\  
+ % \hline
+ % Specimens & Cost of manufacturing the specimens necessary to validate the software & 2000 \\
+ % \hline
+ % DIC system & Cost of using the DIC system for validation tests & - \\
+ % \hline
+ % Tensile tester & Cost of using the tensile testing machine for the validation tests & - \\
+ % \hline
+ % Spray paint & Paint needed to apply the speckle patterns to the specimens & 200 \\
+ \hline
+ Total & & 2200 \\
+ \hline
+\end{tabular}
+\end{center}
+
+
+
+
+\begin{landscape}
+\chapter{Time-frame}
+\begin{figure}[htbp!]
+\begin{center}
+
+% \begin{ganttchart}[y unit title=0.4cm,
+% y unit chart=0.5cm,
+% vgrid,hgrid, 
+% title label anchor/.style={below=-1.6ex},
+% title left shift=.05,
+% title right shift=-.05,
+% title height=1,
+% bar/.style={fill=gray!50},
+% incomplete/.style={fill=white},
+% progress label text={},
+% bar height=0.7,
+% group right shift=0,
+% group top shift=.6,
+% group height=.3,
+% group peaks={}{}{.2}]{24}
+% \begin{ganttchart}[y unit title=0.4cm,
+% y unit chart=0.5cm,
+% vgrid,hgrid, 
+% title label anchor/.style={below=-1.6ex},
+% title left shift=.05,
+% title right shift=-.05,
+% title height=1,
+% bar/.style={fill=gray!50},
+% incomplete/.style={fill=white},
+% progress label text={},
+% bar height=0.7,
+% group right shift=0,
+% group top shift=.6,
+% group height=.3,
+% ]{24}
+\begin{ganttchart}[hgrid,y unit title=0.4cm,y unit chart=0.4cm,time slot format=isodate,
+link bulge=6,x unit=0.3mm,
+milestone/.append style={xscale=0.3cm},
+milestone/.append style={fill=orange},
+bar/.append style={fill=yellow},
+link/.append style={color=blue}]{2017-06-01}{2018-09-30} %link label anchor/.style=below,
+%labels
+\gantttitlecalendar{year, month} \\
+\ganttbar{\small Literature review}{2017-06-01}{2017-08-30}\\
+\ganttmilestone{\small Understanding for framework}{2017-08-30}\\
+\ganttbar{\small DIC framework}{2017-09-01}{2017-10-10}\\
+\ganttmilestone{\small Comprehensive framework}{2017-10-10}\\
+\ganttbar{\small Program the backend}{2017-10-11}{2017-11-30}\\
+\ganttmilestone{\small Preliminary backend}{2017-11-30}\\
+\ganttbar{\small validate the backend}{2017-12-01}{2017-12-30}\\
+\ganttmilestone{\small Identify issues}{2017-12-30}\\
+\ganttbar{\small Specimen design}{2018-01-01}{2018-01-08}\\
+\ganttmilestone{\small Specimen designs}{2018-01-08}\\
+\ganttbar{\small Improve backend}{2018-01-09}{2018-03-14}\\
+\ganttmilestone{\small Functioning backend}{2018-03-14}\\
+% \ganttbar{\small Create DVC code}{2018-03-}{2018-03-31}\\
+\ganttbar{\small Create GUI}{2018-03-15}{2018-04-15}\\
+\ganttmilestone{\small Final program}{2018-04-15}\\
+\ganttbar{\small Validate the program}{2018-04-16}{2018-05-15}\\
+\ganttmilestone{\small Program performance}{2018-05-15}\\
+\ganttbar{\small Write up thesis}{2018-05-16}{2018-08-01}\\
+\ganttmilestone{\small Thesis report}{2018-08-01}\\
+\ganttlink{elem0}{elem1}
+\ganttlink{elem1}{elem2}
+\ganttlink{elem2}{elem3}
+\ganttlink{elem3}{elem4}
+\ganttlink{elem4}{elem5}
+\ganttlink{elem5}{elem6}
+\ganttlink{elem6}{elem7}
+\ganttlink{elem7}{elem8}
+\ganttlink{elem8}{elem9}
+\ganttlink[link type=rdldr*, link bulge 2=18, link mid=0.168]{elem7}{elem10}
+\ganttlink[link type=rdldr*, link bulge 2=120, link mid=0.1]{elem9}{elem14}
+\ganttlink{elem10}{elem11}
+\ganttlink{elem11}{elem12}
+\ganttlink{elem12}{elem13}
+\ganttlink{elem13}{elem14}
+\ganttlink{elem14}{elem15}
+\ganttlink{elem15}{elem16}
+\ganttlink{elem16}{elem17}
+% \ganttlink{elem1}{elem2}
+% \ganttlink[link type=s-s]{elem0}{elem2} 
+% % \ganttlink[link type=f-s]{elem1}{elem2}
+% % \ganttlink[link type=f-s]{elem2}{elem3}
+% \ganttlink[link type=f-s]{elem3}{elem4}
+% % \ganttlink[link type=f-s]{elem4}{elem8}
+% \ganttlink[link type=f-s]{elem3}{elem5}
+% \ganttlink[link type=f-s]{elem5}{elem6}
+% \ganttlink[link type=f-s]{elem6}{elem7}
+% \ganttlink[link type=f-s]{elem7}{elem8}
+% \ganttlink[link type=f-s]{elem3}{elem5}
+% \ganttlink[link type=f-s]{elem5}{elem6}
+% \ganttlink[link type=f-s]{elem6}{elem7}
+% \ganttlink[link type=f-s]{elem7}{elem8}
+% \ganttlink[link type=f-s]{elem8}{elem9}
+
+
+% \gantttitlecalendar{year, month} \\
+% \ganttbar{\small Literature review}{2017-06-01}{2017-09-30}\\
+% \ganttmilestone{\small Understanding for framework}{2017-08-01}\\
+% \ganttbar{\small DIC framework}{2017-08-02}{2017-10-10}\\
+% \ganttbar{\small Program the backend}{2017-10-11}{2017-11-30}\\
+% \ganttbar{\small Test the backend}{2017-12-01}{2017-12-30}\\
+% \ganttbar{\small Specimen design}{2018-01-01}{2018-01-08}\\
+% \ganttbar{\small Improve backend}{2018-01-09}{2018-03-14}\\
+% % \ganttbar{\small Create DVC code}{2018-03-}{2018-03-31}\\
+% \ganttbar{\small Create GUI}{2018-03-15}{2018-04-15}\\
+% \ganttbar{\small Validate the program}{2018-04-16}{2018-05-15}\\
+% \ganttbar{\small Write up thesis}{2018-05-16}{2018-08-01}\\
+% \ganttlink[link type=s-s]{elem0}{elem2} 
+% % \ganttlink[link type=f-s]{elem1}{elem2}
+% % \ganttlink[link type=f-s]{elem2}{elem3}
+% \ganttlink[link type=f-s]{elem3}{elem4}
+% % \ganttlink[link type=f-s]{elem4}{elem8}
+% \ganttlink[link type=f-s]{elem3}{elem5}
+% \ganttlink[link type=f-s]{elem5}{elem6}
+% \ganttlink[link type=f-s]{elem6}{elem7}
+% \ganttlink[link type=f-s]{elem7}{elem8}
+\end{ganttchart}
+\end{center}
+\caption{Gantt chart}
+\end{figure}
+\end{landscape}
+\chapter{Conclusion}
+This document proposes a research project aimed at creating a program for Matlab that is capable of performing DIC or DVC on a given set of images. The proposed program is aimed at providing the user with full control over the correlation process so that users no longer need to treat DIC and DVC as a black box. This project is not intended to have any direct application in industry but rather to provide researchers with a comprehensive tool to perform correlation to determine material deformation.
+
+The motivation of the project has been outlined along with literature review on DIC. The objectives of the project have also been outlined with a research plan which is aimed at achieving these objectives. A time-line for the activities of the research plan is also provided. It is evident that sufficient knowledge and resources are available for the successful completion of this project.
+% \section{Outline of chapters}
+\bibliography{references}
+\bibliographystyle{plain}
+\end{document}
+
+
+
+
+% website for computer vision http://dblp.uni-trier.de/db/journals/ivc/ivc29.html
+
+
+% Are you a vault dweller, cause you seem pretty S.P.E.C.I.A.L. to me
+
+
+
+
+
+% https://drive.google.com/uc?export=download&confirm=TXgS&id=0B8ChoAcEOa4HbWxmbGFPV2M0aHM
+% https://drive.google.com/uc?export=download&confirm=3xOY&id=0B8ChoAcEOa4HaEljZllabTZaeEk
+% https://drive.google.com/uc?export=download&confirm=Lu4C&id=0B8ChoAcEOa4HcHZJMlZLeHdwdnc
+% https://drive.google.com/uc?export=download&confirm=Qic1&id=0B2LiEl8up6X_R1V5NkF2NVhwaG8
+% https://drive.google.com/uc?export=download&confirm=Qic1&id=0B2LiEl8up6X_R1V5NkF2NVhwaG8
+% https://drive.google.com/uc?export=download&confirm=78XC&id=0B_q296AKMRsBUGtORW1jQ0lKQzQ
+
+
+% https://drive.google.com/uc?export=download&confirm=cxmO&id=0B56v3YurenhzYTRXZGZ6MzJOWnc
