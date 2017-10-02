@@ -1,4 +1,4 @@
-function meshcompare(varargin)
+function handle_out=meshcompare(varargin)
 % MESHCOMPARE version 1.3 compares two 2D or 3D arrays, allowing easy visual inspection of
 % regions of data (using 'crop'), and other options.
 % The figure title provides the line of code to reproduce the first figure's
@@ -170,6 +170,7 @@ for ii=mynargin-1:-2:1
         error('Field is too small: it might be because the two points you selected in the crop window were too close together.')
     end
     handle_out=figure;
+    % set(handle_out, 'Visible', 'off');
     surf(xref,'edgecolor','interp');
     hold on;
     
@@ -228,12 +229,18 @@ for ii=mynargin-1:-2:1
         disp('Meshcompare needs even input pairs to compare...')
     end
     hold off
+    
 
     
 end
 
 drawnow
-
+this_fig = handle2struct(handle_out);
+close(handle_out);
+% set(handle_out, 'Visible', 'on');
+for k = 1:nargout
+    varargout{k} = this_fig;
+end
 
 end
 

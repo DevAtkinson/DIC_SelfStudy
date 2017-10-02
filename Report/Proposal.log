@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (MiKTeX 2.9.6350 64-bit) (preloaded format=pdflatex 2017.9.15)  18 SEP 2017 15:07
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (MiKTeX 2.9.6350 64-bit) (preloaded format=pdflatex 2017.9.15)  29 SEP 2017 11:58
 entering extended mode
 **"D:/Work/DIC selfstudy/DIC_SelfStudy/Report/Proposal.tex"
 ("D:/Work/DIC selfstudy/DIC_SelfStudy/Report/Proposal.tex"
@@ -955,10 +955,13 @@ LaTeX Warning: Citation `tsai1987versatile' on page 32 undefined on input line
 LaTeX Warning: Citation `wei1994implicit' on page 32 undefined on input line 10
 29.
 
+
+LaTeX Warning: Citation `zhangtut' on page 32 undefined on input line 1045.
+
 <DICuyx.jpg, id=164, 551.81157pt x 511.9125pt>
 File: DICuyx.jpg Graphic file (type jpg)
  <use DICuyx.jpg>
-Package pdftex.def Info: DICuyx.jpg used on input line 1058.
+Package pdftex.def Info: DICuyx.jpg used on input line 1071.
 (pdftex.def)             Requested size: 220.72072pt x 204.76137pt.
 
 
@@ -967,31 +970,25 @@ LaTeX Warning: `h' float specifier changed to `ht'.
 <DICuy.jpg, id=165, 556.32843pt x 494.59781pt>
 File: DICuy.jpg Graphic file (type jpg)
  <use DICuy.jpg>
-Package pdftex.def Info: DICuy.jpg used on input line 1065.
+Package pdftex.def Info: DICuy.jpg used on input line 1078.
 (pdftex.def)             Requested size: 222.52742pt x 197.8356pt.
 
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-[32] <DVC3.jpg, id=169, 433.62pt x 477.28313pt>
+[32] [33 <./DICuyx.jpg> <./DICuy.jpg>]
+<DVC3.jpg, id=172, 433.62pt x 477.28313pt>
 File: DVC3.jpg Graphic file (type jpg)
  <use DVC3.jpg>
-Package pdftex.def Info: DVC3.jpg used on input line 1079.
+Package pdftex.def Info: DVC3.jpg used on input line 1092.
 (pdftex.def)             Requested size: 173.44492pt x 190.90987pt.
 
-
-LaTeX Warning: `h' float specifier changed to `ht'.
-
-<DVC4.jpg, id=170, 447.17062pt x 475.02469pt>
+<DVC4.jpg, id=173, 447.17062pt x 475.02469pt>
 File: DVC4.jpg Graphic file (type jpg)
  <use DVC4.jpg>
-Package pdftex.def Info: DVC4.jpg used on input line 1086.
+Package pdftex.def Info: DVC4.jpg used on input line 1099.
 (pdftex.def)             Requested size: 178.86507pt x 190.0065pt.
-
-
-LaTeX Warning: `h' float specifier changed to `ht'.
-
-) [33 <./DICuyx.jpg> <./DICuy.jpg>] [34 <./DVC3.jpg> <./DVC4.jpg>]
+) [34 <./DVC3.jpg> <./DVC4.jpg>]
 Chapter 4.
 [35
 
@@ -1034,7 +1031,7 @@ LaTeX Warning: There were undefined references.
 Here is how much of TeX's memory you used:
  18097 strings out of 493323
  360590 string characters out of 3139066
- 432532 words of memory out of 3000000
+ 432579 words of memory out of 3000000
  21194 multiletter control sequences out of 15000+200000
  12834 words of font info for 46 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
@@ -1057,7 +1054,7 @@ ic/amsfonts/cm/cmsy10.pfb><D:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfo
 nts/cm/cmsy7.pfb><D:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cm
 ti10.pfb><D:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmti9.pfb>
 <D:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/symbols/msam10.pfb>
-Output written on Proposal.pdf (48 pages, 2726708 bytes).
+Output written on Proposal.pdf (48 pages, 2729157 bytes).
 PDF statistics:
  287 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)

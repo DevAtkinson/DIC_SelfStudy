@@ -131,7 +131,7 @@ function actualout=MatlabCalibration(varargin)
 
 	clear lsqin
 	lsqin=lsqin2;
-	options = optimoptions('lsqnonlin','Algorithm','levenberg-marquardt','Display','iter','FunctionTolerance',1e-40,'StepTolerance',1e-40,'MaxFunctionEvaluations',1e6,'MaxIterations',100,'UseParallel',true);
+	options = optimoptions('lsqnonlin','Algorithm','levenberg-marquardt','Display','iter','FunctionTolerance',1e-40,'StepTolerance',1e-40,'MaxFunctionEvaluations',1e6,'MaxIterations',100,'UseParallel',false);
 	tic
 	for i=1:improve_r
 		disp(improve(i,:))

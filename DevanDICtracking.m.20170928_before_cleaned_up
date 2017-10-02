@@ -1,4 +1,4 @@
-function [P_out,Condition_out,figs]=DevanDICtracking(varargin)
+function send_this_out=DevanDICtracking(varargin)
 	%handle the input variables
 	for i=1:nargin/2
 		switch varargin{i*2-1}
@@ -20,7 +20,6 @@ function [P_out,Condition_out,figs]=DevanDICtracking(varargin)
 	% G_in=im2double(G_in);
 	G=G_in;
 	F=F_in(subpos(2):subpos(2)+subsize-1,subpos(1):subpos(1)+subsize-1);
-	[r,c]=size(F);
 	% imagesc(F_in);
 	% hold on
 	% plot(subpos(1),subpos(2),'rx')
@@ -45,10 +44,8 @@ function [P_out,Condition_out,figs]=DevanDICtracking(varargin)
 	F_interp=F_in(subpos(2)-1:subpos(2)+subsize,subpos(1)-1:subpos(1)+subsize);	%assign subset from reference image for interpolation
 
 
-	XX=subpos(1):subpos(1)+subsize-1;										% x values over subset
-	YY=subpos(2):subpos(2)+subsize-1;										% y values over subset
-	X=repmat(XX,r,1);
-	Y=repmat(YY',1,c);
+	X=subpos(1):subpos(1)+subsize-1;										% x values over subset
+	Y=subpos(2):subpos(2)+subsize-1;										% y values over subset
 	x0=subsize/2+subpos(1);													% x value for subset centre
 	y0=subsize/2+subpos(2);													% y value for subset centre
 	[r_int,c_int]=size(F_interp);
@@ -59,7 +56,7 @@ function [P_out,Condition_out,figs]=DevanDICtracking(varargin)
 	% 	end
 	% end
 
-	
+	[r,c]=size(F);
 	sumF=0;
 	sumG2=0;
 	Fmean=mean(mean(F));
@@ -90,8 +87,8 @@ function [P_out,Condition_out,figs]=DevanDICtracking(varargin)
 	for i=1:r
 		for j=1:c
 			%xp and yp are the distance of the current pixel point from the subset center
-			xp=XX(j)-x0;
-			yp=YY(i)-y0;
+			xp=X(j)-x0;
+			yp=Y(i)-y0;
 			if xp>xpmax
 				xpmax=xp;
 			end
@@ -154,9 +151,9 @@ function [P_out,Condition_out,figs]=DevanDICtracking(varargin)
 	% end
 	[r_g,c_g]=size(G);
 	[Xmesh,Ymesh]=meshgrid(1:1:c_g,1:1:r_g);
-	% XmeshGPU=gpuArray(Xmesh);
-	% YmeshGPU=gpuArray(Ymesh);
-	% Ggpu=gpuArray(G);
+	XmeshGPU=gpuArray(Xmesh);
+	YmeshGPU=gpuArray(Ymesh);
+	Ggpu=gpuArray(G);
 	[r,c]=size(F);
 	% fileID=fopen('correlation_results.txt','w');
 	converge=1;
@@ -166,43 +163,41 @@ function [P_out,Condition_out,figs]=DevanDICtracking(varargin)
 		% get correct portion of image G with warp applied
 		% for l=1:r
 		% 	parfor j=1:c
-		% 		dx=XX(j)-x0;
-		% 		dy=YY(l)-y0;
-		% 		xp1(l,j)=x0+dx*(1+P(2,converge))+P(3,converge)*dy+P(1,converge);
-		% 		yp1(l,j)=y0+dy*(1+P(6,converge))+P(5,converge)*dx+P(4,converge);
-				
+		% 		dx=X(j)-x0;
+		% 		dy=Y(l)-y0;
+		% 		xp=x0+dx*(1+P(2,converge))+P(3,converge)*dy+P(1,converge);
+		% 		yp=y0+dy*(1+P(6,converge))+P(5,converge)*dx+P(4,converge);
+		% 		G_defromed(l,j)=interp2(Xmesh,Ymesh,G,xp,yp,'linear');
 		% 	end
 		% end
-		dx=X-x0;
-		dy=Y-y0;
-		xp=x0+dx.*(1+P(2,converge))+P(3,converge).*dy+P(1,converge);
-		yp=y0+dy.*(1+P(6,converge))+P(5,converge).*dx+P(4,converge);
 
-
-		G_defromed=interp2(Xmesh,Ymesh,G,xp,yp,'cubic');
+		for l=1:r
+			parfor j=1:c
+				dx=X(j)-x0;
+				dy=Y(l)-y0;
+				xp(l,j)=x0+dx*(1+P(2,converge))+P(3,converge)*dy+P(1,converge);
+				yp(l,j)=y0+dy*(1+P(6,converge))+P(5,converge)*dx+P(4,converge);
+				
+			end
+		end
+		G_defromed=interp2(Xmesh,Ymesh,G,xp,yp,'linear');
 
 		% xpg=gpuArray(xp);
 		% ypg=gpuArray(yp);
 		% G_defromed=gather(interp2(XmeshGPU,YmeshGPU,Ggpu,xpg,ypg,'linear'));
-		% close_this=figure(18949);
-		% this_fig=meshcomparequiet(F,G_defromed);
-		% this_fig = handle2struct(gcf);
-		% close(close_this);
-		figs{converge}=G_defromed;
+
+		% meshcompare(F,G_defromed)
 		% CorrelationStation(F,G_defromed)
 		G_def_mean=mean(mean(G_defromed));
 
-		% dG_temp=0;
+		dG_temp=0;
 		%determine delta G
-		% for l=1:r
-		% 	for j=1:c
-		% 		dG_temp=dG_temp+(G_defromed(l,j)-G_def_mean)^2;
-		% 		% dG_temp=dG_temp+G_defromed(l,j)-G_def_mean;
-		% 	end
-		% end
-
-		dG_temp=sum(sum((G_defromed-G_def_mean).^2));
-
+		for l=1:r
+			for j=1:c
+				dG_temp=dG_temp+(G_defromed(l,j)-G_def_mean)^2;
+				% dG_temp=dG_temp+G_defromed(l,j)-G_def_mean;
+			end
+		end
 
 		% for l=1:r
 		% 	parfor j=1:c
@@ -220,7 +215,6 @@ function [P_out,Condition_out,figs]=DevanDICtracking(varargin)
 				q=q+dfdw{l,j}'*(F(l,j)-Fmean-dF/dG*(G_defromed(l,j)-G_def_mean));
 			end
 		end
-
 		deltaP=-H\q;
 		W=Warp(P(:,converge),deltaP);
 		P(:,converge+1)=[W(1,3);(W(1,1)-1);W(1,2);W(2,3);W(2,1);(W(2,2)-1)];
@@ -232,23 +226,10 @@ function [P_out,Condition_out,figs]=DevanDICtracking(varargin)
 		elseif (converge>400)
 			flag=0;
 		end
-		criteria=0;
-		for l=1:r
-			parfor j=1:c
-				dx=XX(j)-x0;
-				dy=YY(l)-y0;
-				xp1(l,j)=x0+dx*(1+P(2,converge))+P(3,converge)*dy+P(1,converge);
-				yp1(l,j)=y0+dy*(1+P(6,converge))+P(5,converge)*dx+P(4,converge);
-				criteria=criteria+((F(l,j)-Fmean)/dF -(G_defromed(l,j)-G_def_mean)/dG)^2
-				
-			end
-		end
 
 		timetaken=toc;
 		% fprintf(fileID,'%d\t%.16f\t%.16f\t%.16f\t%.16f\t%.16f\t%.16f\t%.16f\t%f\n',converge,P(1,converge+1),P(2,converge+1),P(3,converge+1),P(4,converge+1),P(5,converge+1),P(6,converge+1),check(converge),timetaken);
-		% send_this_out(converge,:)=[converge,P(1,converge+1),P(2,converge+1),P(3,converge+1),P(4,converge+1),P(5,converge+1),P(6,converge+1),check(converge),timetaken];
-		P_out(converge,:)=[P(1,converge+1),P(2,converge+1),P(3,converge+1),P(4,converge+1),P(5,converge+1),P(6,converge+1)];
-		Condition_out(converge,:)=[check(converge),timetaken,criteria];
+		send_this_out(converge,:)=[converge,P(1,converge+1),P(2,converge+1),P(3,converge+1),P(4,converge+1),P(5,converge+1),P(6,converge+1),check(converge),timetaken];
 		converge=converge+1;
 	end
 	% fclose(fileID);

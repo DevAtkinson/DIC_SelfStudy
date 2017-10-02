@@ -50,7 +50,7 @@
 \contentsline {subsection}{\numberline {3.7.9}Distortion in Calibration}{32}
 \contentsline {section}{\numberline {3.8}Displacement fields}{32}
 \contentsline {subsection}{\numberline {3.8.1}DIC displacement fields}{32}
-\contentsline {subsection}{\numberline {3.8.2}DVC displacement fields}{32}
+\contentsline {subsection}{\numberline {3.8.2}DVC displacement fields}{33}
 \contentsline {chapter}{\numberline {4}Objectives}{35}
 \contentsline {section}{\numberline {4.1}Literature review}{35}
 \contentsline {section}{\numberline {4.2}Framework and preliminary backend code}{35}
