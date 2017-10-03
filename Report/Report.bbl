@@ -1,3 +1,38 @@
-\begin{thebibliography}{}
+\begin{thebibliography}{1}
+
+\bibitem{zhangtut}
+Wilhelm Burger.
+\newblock Zhang’s camera calibration algorithm: In-depth tutorial and
+  implementation.
+\newblock {\em month}, 2016.
+
+\bibitem{luong1997self}
+Q-T Luong and Olivier~D Faugeras.
+\newblock Self-calibration of a moving camera from point correspondences and
+  fundamental matrices.
+\newblock {\em International Journal of computer vision}, 22(3):261--289, 1997.
+
+\bibitem{panfast}
+B~Pan, K~Li, and W~Tong.
+\newblock Fast, robust and accurate digital image correlation calculation
+  without redundant computations.
+\newblock {\em Experimental Mechanics}, 53(7):1277--1289, 2013.
+
+\bibitem{tsai1987versatile}
+Roger Tsai.
+\newblock A versatile camera calibration technique for high-accuracy 3d machine
+  vision metrology using off-the-shelf tv cameras and lenses.
+\newblock {\em IEEE Journal on Robotics and Automation}, 3(4):323--344, 1987.
+
+\bibitem{wei1994implicit}
+Guo-Qing Wei and Song De~Ma.
+\newblock Implicit and explicit camera calibration: Theory and experiments.
+\newblock {\em IEEE Transactions on Pattern Analysis and Machine Intelligence},
+  16(5):469--480, 1994.
+
+\bibitem{emerging}
+Zhengyou Zhang.
+\newblock {\em Camera Calibration}.
+\newblock Prentice Hall PTR, 2004.
 
 \end{thebibliography}

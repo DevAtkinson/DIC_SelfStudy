@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (MiKTeX 2.9.6350 64-bit) (preloaded format=pdflatex 2017.9.15)  2 OCT 2017 12:16
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (MiKTeX 2.9.6350 64-bit) (preloaded format=pdflatex 2017.9.15)  3 OCT 2017 17:27
 entering extended mode
 **./Report.tex
 (Report.tex
@@ -885,44 +885,72 @@ Chapter 1.
 
 ]
 Chapter 2.
-Missing character: There is no â in font cmr10!
-Missing character: There is no € in font cmr10!
-Missing character: There is no ™ in font cmr10!
-[8
 
-] [9] [10]
-Chapter 3.
-(Report.bbl [11
+LaTeX Warning: Marginpar on page 8 moved.
+
+[8
 
 ]
 
-LaTeX Warning: Empty `thebibliography' environment on input line 3.
+LaTeX Warning: Reference `eq:world 2 sensor' on page 9 undefined on input line 
+118.
 
-) [12
+[9] [10] [11]
+Overfull \hbox (1.43256pt too wide) in paragraph at lines 377--379
+\OT1/cmr/m/n/10 Since $\OML/cmm/b/it/10 B$ \OT1/cmr/m/n/10 is sym-met-ric its c
+on-tents can be rep-re-sented by a 6D vec-tor $\OML/cmm/b/it/10 b \OT1/cmr/m/n/
+10 = [\OML/cmm/m/it/10 b[]b[]b[]b[]b[]b[]\OT1/cmr/m/n/10 ][]$.
+ []
 
-] (Report.aux) ) 
+[12] [13] [14] [15] [16]
+Overfull \hbox (13.46188pt too wide) in paragraph at lines 564--564
+[] 
+ []
+
+[17] [18]
+Chapter 3.
+(Report.bbl [19
+
+]
+Missing character: There is no â in font cmr10!
+Missing character: There is no € in font cmr10!
+Missing character: There is no ™ in font cmr10!
+) [20
+
+] (Report.aux)
+
+LaTeX Warning: There were undefined references.
+
+ ) 
 Here is how much of TeX's memory you used:
- 17532 strings out of 493323
- 348984 string characters out of 3139066
- 413478 words of memory out of 3000000
- 20648 multiletter control sequences out of 15000+200000
- 11230 words of font info for 41 fonts, out of 3000000 for 9000
+ 17607 strings out of 493323
+ 350576 string characters out of 3139066
+ 425672 words of memory out of 3000000
+ 20722 multiletter control sequences out of 15000+200000
+ 12181 words of font info for 44 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
- 62i,18n,76p,1141b,700s stack positions out of 5000i,500n,10000p,200000b,50000s
-<D:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmb
-x10.pfb><D:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx12.pfb>
-<D:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmex10.pfb><D:/Prog
-ram Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi10.pfb><D:/Program File
-s/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi7.pfb><D:/Program Files/MiKTeX 
-2.9/fonts/type1/public/amsfonts/cm/cmmib10.pfb><D:/Program Files/MiKTeX 2.9/fon
-ts/type1/public/amsfonts/cm/cmr10.pfb><D:/Program Files/MiKTeX 2.9/fonts/type1/
-public/amsfonts/cm/cmr7.pfb><D:/Program Files/MiKTeX 2.9/fonts/type1/public/ams
-fonts/cm/cmr9.pfb><D:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/c
-msl9.pfb><D:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb
->
-Output written on Report.pdf (12 pages, 446327 bytes).
+ 62i,18n,76p,1506b,700s stack positions out of 5000i,500n,10000p,200000b,50000s
+<D:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx10.pfb><D:/Pr
+ogram Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx12.pfb><D:/Program Fi
+les/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx5.pfb><D:/Program Files/MiKTe
+X 2.9/fonts/type1/public/amsfonts/cm/cmbx7.pfb><D:/Program Files/MiKTeX 2.9/fon
+ts/type1/public/amsfonts/cm/cmex10.pfb><D:/Program Files/MiKTeX 2.9/fonts/type1
+/public/amsfonts/cm/cmmi10.pfb><D:/Program Files/MiKTeX 2.9/fonts/type1/public/
+amsfonts/cm/cmmi5.pfb><D:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/
+cm/cmmi7.pfb><D:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmib1
+0.pfb><D:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cmextra/cmmib7.p
+fb><D:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr10.pfb><D:/Pr
+ogram Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr5.pfb><D:/Program File
+s/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr7.pfb><D:/Program Files/MiKTeX 2
+.9/fonts/type1/public/amsfonts/cm/cmr9.pfb><D:/Program Files/MiKTeX 2.9/fonts/t
+ype1/public/amsfonts/cm/cmsl9.pfb><D:/Program Files/MiKTeX 2.9/fonts/type1/publ
+ic/amsfonts/cm/cmsy10.pfb><D:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfo
+nts/cm/cmsy7.pfb><D:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cm
+ti10.pfb><D:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/symbols/msam1
+0.pfb>
+Output written on Report.pdf (20 pages, 580208 bytes).
 PDF statistics:
- 128 PDF objects out of 1000 (max. 8388607)
+ 186 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
  73 words of extra memory for PDF output out of 10000 (max. 10000000)
 
