@@ -1,4 +1,4 @@
-function [P_final,Corr_out]=DevanDICtracking(varargin)
+function [P_out,Condition_out,figs]=DevanDICtracking(varargin)
 	%handle the input variables
 	for i=1:nargin/2
 		switch varargin{i*2-1}
@@ -224,32 +224,32 @@ function [P_final,Corr_out]=DevanDICtracking(varargin)
 		deltaP=-H\q;
 		W=Warp(P(:,converge),deltaP);
 		P(:,converge+1)=[W(1,3);(W(1,1)-1);W(1,2);W(2,3);W(2,1);(W(2,2)-1)];
+		% fprintf('%f\t%f\t%f\t%f\t%f\t%f\n',P(1,converge+1),P(2,converge+1),P(3,converge+1),P(4,converge+1),P(5,converge+1),P(6,converge+1));
 
 		check(converge)=sqrt(deltaP(1)^2+(xpmax*deltaP(2))^2+(ypmax*deltaP(3))^2+deltaP(4)^2+(xpmax*deltaP(5))^2+(ypmax*deltaP(6))^2);
-		if (check(converge)<0.001)
+		if (check(converge)<10^(-4))
 			flag=0;
-		elseif (converge>1000)
+		elseif (converge>400)
 			flag=0;
 		end
+		% criteria=0;
+		% for l=1:r
+		% 	parfor j=1:c
+		% 		dx=XX(j)-x0;
+		% 		dy=YY(l)-y0;
+		% 		xp1(l,j)=x0+dx*(1+P(2,converge))+P(3,converge)*dy+P(1,converge);
+		% 		yp1(l,j)=y0+dy*(1+P(6,converge))+P(5,converge)*dx+P(4,converge);
+		% 		criteria=criteria+((F(l,j)-Fmean)/dF -(G_defromed(l,j)-G_def_mean)/dG)^2
+				
+		% 	end
+		% end
 
-		if (flag==0)
-			criteria=0;
-			for l=1:r
-				for j=1:c
-					dx=XX(j)-x0;
-					dy=YY(l)-y0;
-					xp1(l,j)=x0+dx*(1+P(2,converge))+P(3,converge)*dy+P(1,converge);
-					yp1(l,j)=y0+dy*(1+P(6,converge))+P(5,converge)*dx+P(4,converge);
-					criteria=criteria+((F(l,j)-Fmean)/dF -(G_defromed(l,j)-G_def_mean)/dG)^2;
-					
-				end
-			end
-			Corr_out=criteria;
-			P_final=[P(1,converge+1),P(2,converge+1),P(3,converge+1),P(4,converge+1),P(5,converge+1),P(6,converge+1)];
-			fprintf('Number of iterations: %d', converge);
-		end
+		timetaken=toc;
+		% fprintf(fileID,'%d\t%.16f\t%.16f\t%.16f\t%.16f\t%.16f\t%.16f\t%.16f\t%f\n',converge,P(1,converge+1),P(2,converge+1),P(3,converge+1),P(4,converge+1),P(5,converge+1),P(6,converge+1),check(converge),timetaken);
+		% send_this_out(converge,:)=[converge,P(1,converge+1),P(2,converge+1),P(3,converge+1),P(4,converge+1),P(5,converge+1),P(6,converge+1),check(converge),timetaken];
 		P_out(converge,:)=[P(1,converge+1),P(2,converge+1),P(3,converge+1),P(4,converge+1),P(5,converge+1),P(6,converge+1)];
-
+		% Condition_out(converge,:)=[check(converge),timetaken,criteria];
+		Condition_out(converge,:)=[check(converge),timetaken];
 		converge=converge+1;
 	end
 	% fclose(fileID);

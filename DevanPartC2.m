@@ -8,7 +8,7 @@ function DevanPartC()
 	for i=1:9
 		ims{i}=sprintf('0%d',i);
 	end
-	calib=DevanCalibration('folder',f,'ImageName',im,'images',ims)
+	calib=PurdueCalibration('folder',f,'ImageName',im,'images',ims)
 	subsize=41;
 	subpos=[425,230];
 
@@ -50,30 +50,37 @@ function DevanPartC()
 	subplot(2,2,2);
 	imagesc(F);
 	hold on;
-	[xf,yf]=ginput(1);
+	[xf,yf]=ginput(1)
 	plot(xf,yf,'rx');
 	subplot(2,2,3);
 	imagesc(G_in);
 	key=0;
 	while(key==0)
-		[xg1,yg1]=ginput(1);
+		[xg1,yg1]=ginput(1)
 		subplot(2,2,4);
 		imagesc(G_in(floor(yg1)-floor(subsize/2):floor(yg1)+floor(subsize/2),floor(xg1)-floor(subsize/2):floor(xg1)+floor(subsize/2)));
 		key = waitforbuttonpress;
 	end
 	subplot(2,2,4);
 	imagesc(G_in(floor(yg1)-floor(subsize/2):floor(yg1)+floor(subsize/2),floor(xg1)-floor(subsize/2):floor(xg1)+floor(subsize/2)));
-	[xg,yg]=ginput(1);
+	[xg,yg]=ginput(1)
 	xguess=(xf+subpos(1))-(xg+floor(xg1)-floor(subsize/2));
 	yguess=(yf+subpos(2))-(yg+floor(yg1)-floor(subsize/2));
 	% guess=[xguess;0;0;yguess;0;0]
 	tic
 	guess=[(xguess);0;0;(yguess);0;0]
-	[P,Corr]=DevanDICtracking('undeformed image',F_in,'deformed image',G_in,'subset size',subsize,'subset position',subpos,'guess',guess)
+	[P,Cond,figs]=DevanDICtracking('undeformed image',F_in,'deformed image',G_in,'subset size',subsize,'subset position',subpos,'guess',guess);
+	result.P=P;
+	result.guess=guess;
+	result.Cond=Cond;
+	result.figs=figs;
+	result.original_fig=F;
+	save('stability_results_guassian.mat','result');
 
-	Final_corrected_image=undeform(G_in,P,subsize,subpos);
+	P_use=P(end,:);
+	Final_corrected_image=undeform(G_in,P_use,subsize,subpos);
 
-	% meshcompare(F_in,Final_corrected_image);
+	meshcompare(F_in,Final_corrected_image);
 
 	figure()
 	imagesc(F_in)
@@ -161,7 +168,7 @@ function send_this_out=undeform(Ideformed,P,subsize,subpos)
 
 	
 	for l=1:r
-		for j=1:c
+		parfor j=1:c
 			dx=X(j)-x0;
 			dy=Y(l)-y0;
 			xp(l,j)=x0+dx*(1+P(2))+P(3)*dy+P(1);

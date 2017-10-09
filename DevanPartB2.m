@@ -6,7 +6,7 @@ function DevanPartB
 	im='img';
 	ims{1}=sprintf('0%d',0);
 	ims{2}=sprintf('0%d',2);
-	subsize=41;
+	subsize=71;
 	subpos=[425,230];
 
 	for i=1:max(size(ims))
@@ -28,55 +28,61 @@ function DevanPartB
 	subplot(2,2,2);
 	imagesc(F);
 	hold on;
-	[xf,yf]=ginput(1);
+	[xf,yf]=ginput(1)
 	plot(xf,yf,'rx');
 	subplot(2,2,3);
 	imagesc(G_in);
 	key=0;
 	while(key==0)
-		[xg1,yg1]=ginput(1);
+		[xg1,yg1]=ginput(1)
 		subplot(2,2,4);
 		imagesc(I{2}(floor(yg1)-floor(subsize/2):floor(yg1)+floor(subsize/2),floor(xg1)-floor(subsize/2):floor(xg1)+floor(subsize/2)));
 		key = waitforbuttonpress;
 	end
 	subplot(2,2,4);
 	imagesc(I{2}(floor(yg1)-floor(subsize/2):floor(yg1)+floor(subsize/2),floor(xg1)-floor(subsize/2):floor(xg1)+floor(subsize/2)));
-	[xg,yg]=ginput(1);
+	[xg,yg]=ginput(1)
 	xguess=(xf+subpos(1))-(xg+floor(xg1)-floor(subsize/2));
 	yguess=(yf+subpos(2))-(yg+floor(yg1)-floor(subsize/2));
+	% guess=[xguess;0;0;yguess;0;0]
+	tic
+	count=1;
+	multiplier=5;
+	n=21;
+	adapter=ceil(n/2);
+	for i=1:n
+		parfor j=1:n
+			fprintf('i:%d j:%d\n',i,j);
+			guess{i,j}=[(xguess+(i-adapter)*multiplier);0;0;(yguess+(j-adapter)*multiplier);0;0];
+			[P{i,j},Cond{i,j},figs{i,j}]=DevanDICtracking('undeformed image',F_in,'deformed image',G_in,'subset size',subsize,'subset position',subpos,'guess',guess{i,j});
+			% result{i,j}.P=P;
+			% result{i,j}.guess=guess;
+			% result{i,j}.Cond=Cond;
+			% result{i,j}.figs=figs;
+			% result{i,j}.original_fig=F;
+			% count=count+1;
+			
+		end
+	end
+	result=getback(P,Cond,figs,guess,F,n);
+	tic
+	save('stability_results_subset_71_2.mat','result','-v7.3');
+	toc
+	% save('stability_results.mat','results');
+	% total_time=toc
 
-	guess=[xguess;0;0;yguess;0;0]
-	[P,Corr]=DevanDICtracking('undeformed image',F_in,'deformed image',G_in,'subset size',subsize,'subset position',subpos,'guess',guess)
-
-	Final_corrected_image=undeform(G_in,P,subsize,subpos);
-	figure()
-	imagesc(F_in)
-	figure
-	imagesc(Final_corrected_image)
 	% DevanDICtracking('folder',f,'ImageName',im,'images',ims,'subset size',subsize,'subset position',subpos)
 
 end
 
-function send_this_out=undeform(Ideformed,P,subsize,subpos)
-	G=Ideformed;
-	[r,c]=size(G);
-	X=1:1:c;										% x values over subset
-	Y=1:1:r;										% y values over subset
-	x0=subsize/2+subpos(1);													% x value for subset centre
-	y0=subsize/2+subpos(2);													% y value for subset centre
-
-	[Xmesh,Ymesh]=meshgrid(1:1:c,1:1:r);
-
-	
-	for l=1:r
-		parfor j=1:c
-			dx=X(j)-x0;
-			dy=Y(l)-y0;
-			xp(l,j)=x0+dx*(1+P(2))+P(3)*dy+P(1);
-			yp(l,j)=y0+dy*(1+P(6))+P(5)*dx+P(4);
-			
+function result=getback(P,Cond,figs,guess,F,n)
+	for i=1:n
+		for j=1:n
+			result{i,j}.P=P{i,j};
+			result{i,j}.Cond=Cond{i,j};
+			result{i,j}.figs=figs{i,j};
+			result{i,j}.guess=guess{i,j};
+			result{i,j}.original_fig=F;
 		end
 	end
-	send_this_out=interp2(Xmesh,Ymesh,G,xp,yp,'linear');
-
 end

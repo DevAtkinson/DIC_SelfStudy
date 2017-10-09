@@ -1,5 +1,10 @@
 \begin{thebibliography}{1}
 
+\bibitem{apertureProblem}
+Marc~D. Binder, Nobutaka Hirokawa, and Uwe Windhorst, editors.
+\newblock {\em Aperture Problem}.
+\newblock Springer Berlin Heidelberg, Berlin, Heidelberg, 2009.
+
 \bibitem{zhangtut}
 Wilhelm Burger.
 \newblock Zhang’s camera calibration algorithm: In-depth tutorial and
@@ -17,6 +22,18 @@ B~Pan, K~Li, and W~Tong.
 \newblock Fast, robust and accurate digital image correlation calculation
   without redundant computations.
 \newblock {\em Experimental Mechanics}, 53(7):1277--1289, 2013.
+
+\bibitem{DLTnorm}
+HI~Richard.
+\newblock In defence of the 8-point algorithm.
+\newblock In {\em Proceedings of the 5th International Conference on Computer
+  Vision}, pages 1064--1070. Cambridge: IEEE Computer Science Press, 1995.
+
+\bibitem{sutton2009image}
+M.A. Sutton, J.J. Orteu, and H.~Schreier.
+\newblock {\em Image Correlation for Shape, Motion and Deformation
+  Measurements: Basic Concepts,Theory and Applications}.
+\newblock Springer US, 2009.
 
 \bibitem{tsai1987versatile}
 Roger Tsai.

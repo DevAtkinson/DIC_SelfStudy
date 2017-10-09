@@ -75,8 +75,8 @@ node [pos=.5, /pgfgantt/link label anchor] {\ganttlinklabel}
 \includepdf{Cover.pdf}
 \includepdf{TitlePage.pdf}
 \includepdf{plagiarism.pdf}
-% \chapter*{Abstract}
-% Digital Image Correlation (DIC) and Digital Volume Correlation (DVC) are becoming widely used tools, in the field of material science, to measure the displacements and deformations of specimens. However the high cost of commercial DIC and DVC software and the limited control offered over the correlation process in both commercial and open-source software limits its widespread adoption. This paper proposes a project which aims to create a Matlab based program capable of performing 2D DIC and DVC on a given set of images while allowing the user control over the correlation process. It is hypothesised that the different DIC algorithms use different methods to perform the same tasks in the correlation process. Thus by analysing these algorithms it is possible to combine these different methods into one program which will allow the user to select which methods to use for the various correlation tasks. If successful, this project will produce a freely available program, which offers many of the correlation methods of the different DIC algorithms, so that users will be able to perform in depth DIC and DVC analyses.
+\chapter*{Abstract}
+Digital Image Correlation (DIC) and Digital Volume Correlation (DVC) are becoming widely used tools, in the field of material science, to measure the displacements and deformations of specimens. However the high cost of commercial DIC and DVC software and the limited control offered over the correlation process in both commercial and open-source software limits its widespread adoption. This paper proposes a project which aims to create a Matlab based program capable of performing 2D DIC and DVC on a given set of images while allowing the user control over the correlation process. It is hypothesised that the different DIC algorithms use different methods to perform the same tasks in the correlation process. Thus by analysing these algorithms it is possible to combine these different methods into one program which will allow the user to select which methods to use for the various correlation tasks. If successful, this project will produce a freely available program, which offers many of the correlation methods of the different DIC algorithms, so that users will be able to perform in depth DIC and DVC analyses.
 
 % which allows users full control over the correlation process 
 
@@ -89,7 +89,7 @@ node [pos=.5, /pgfgantt/link label anchor] {\ganttlinklabel}
 \tableofcontents
 \listoffigures
 \chapter{Introduction}
-Digital Image Correlation (DIC) has become a popular tool in the field of material science to measure the deformations and displacements of test specimens as they are loaded. This project focuses on the creation of a simple DIC program that is capable of taking in a set of calibration images and determining the calibration parameters. Additionally it will then be capable of performing correlation between 2 images.
+
 
 
 
@@ -1136,6 +1136,119 @@ It can be shown that the Zero-Mean Normalised Cross-Correlation and Zero-Mean No
 This is significant since the ZNSSD criteria is easier to calculate while the ZNCC criteria value is easier to interpret. Thus it is common practice to calculate the ZNSSD criteria coefficient and convert it to the ZNCC value for easier interpretation.
 
 
+
+
+% A method of determining how well the reference subset, $G$, has been matched to a subset in the deformed image, $F$, is needed in order for a DIC algorithm to know when correlation has been accomplished. This is done through equations called correlation criteria which describe the fit between the two subsets by a single number. 
+
+% Correlation criteria fulfil an additional purpose. As images are taken, as the specimen is deformed, the intensity of the images can change as a result of changes in lighting, changes in reflectivity as the material strains and so on. Although this does not cause the patterns in the subsets to change it does cause the grayscale values of individual pixels, that make up the patterns, to change. Some correlation criteria account for this by accommodating for offset in intensity values or for scaling the intensity values.
+
+% Each correlation criteria is based off of a cost function which is usually a variation of the sum of squared differences between the intensities of the reference and investigated subset. They vary in the scaling and offset that is applied to the investigated subset's intensity values. 
+
+% \subsubsection{Sum of square difference}
+% This is one of the more basic correlation criteria since it does not adjust for lighting. It is simply the sum of squared differences between the reference subset and investigated subset.
+% \begin{equation}
+% \chi_{SSD}^2 (G) = \sum_{i} \left( G_i -F_i \right) ^2
+% \end{equation}
+
+% \subsubsection{Zero-mean sum of squared difference}
+% To account for an offset in light intensity a constant is added to the investigated subset's intensities. This results in the following cost function.
+% \begin{equation}
+% \label{eq:cf zssd}
+% \chi_{ZSSD}^2 (G) = \sum_{i} \left( G_i +b -F_i \right) ^2
+% \end{equation}
+% The offset $b$ can be solved for by treating it as an additional parameter of the optimisation problem. However it is preferred to determine an optimal estimate for $b$ by taking the derivative of the cost function with respect to $b$ and setting it to zero.
+% \begin{align}
+% \frac{\partial \chi_{ZSSD}^2}{\partial b} &= 2 \sum_i \left( G_i + b_{opt} - F_i \right) = 0 \\
+% 0 &= \sum_i \left( G_i \right) - \sum_i \left( F_i \right) +b_{opt}n \\
+% \therefore \quad b_{opt} &= \frac{\sum_i F_i}{n} - \frac{\sum_i G_i}{n} = \mean{F}-\mean{G}
+% \end{align}
+% Here $n$ is the number of pixels in the subset and $\mean{F}$ and $\mean{G}$  are the average intensity values for the reference and investigated subset respectively. Substituting $b_{opt}$ for $b$ in the cost function equation \ref{eq:cf zssd} the correlation criteria is obtained.
+% \begin{equation}
+% \chi_{ZSSD}^2 = \sum_{i} \left( \left( G_i - \mean{G} \right) - \left( F_i - \mean{F} \right) \right) ^2
+% \end{equation}
+
+% \subsubsection{Normalised sum of squared difference}
+% This correlation criteria accommodates for a scale change in the light intensity of the investigate subset. This is done by multiplying the investigated subset intensities by a constant $a$.
+% \begin{equation}
+% \label{eq:cf nssd}
+% \chi_{NSSD}^2 = \sum_i \left( a G_i - F_i\right)
+% \end{equation}
+% Again an optimal estimate can be found for $a$ such that it can be eliminated from the equation. This is done by taking the derivative of equation \ref{eq:cf nssd} with respect to $a$ and setting it to zero.
+% \begin{align}
+% \frac{\partial \chi_{NSSD}^2}{\partial a} &= 2 \sum_i \left( a_{opt} G_i - F_i \right) G_i = 0\\
+% a_{opt} &= \frac{\sum_i G_i F_i}{\sum_i G_i^2}
+% \end{align}
+% Substitution of $a_{opt}$ for $a$ in equation \ref{eq:cf nssd} gives the correlation criteria.
+% \begin{equation}
+%   \chi_{NSSD}^2 = \sum_i \left( \frac{\sum_i G_i F_i}{\sum_i G_i^2} G_i - F_i \right) ^2
+% \end{equation}
+
+% \subsubsection{Zero-mean normalised sum of square difference}
+% Accounting for both offset and scale of the intensities leads to the zero-mean normalised sum of square difference correlation criteria. It has the following cost function.
+% \begin{equation}
+% \label{eq:cf znssd}
+%   \chi_{ZNSSD}^2 = \sum_i \left( a G_i + b - F_i \right) ^2
+% \end{equation}
+% The optimal estimators for $a$ and $b$ are found by taking the derivative of equation \ref{eq:cf znssd} with respect to $a$ and $b$ separately and setting this to zero.
+% \begin{align}
+%   \frac{\partial \chi_{ZNSSD}^2 }{\partial a} &= 2 \sum_i \left( a_{opt} G_i + b- F_i \right) G_i = 0\\
+%   \Rightarrow a_{opt} &= \frac{\sum_i \left( F_i - b \right) G_i}{\sum_i G_i^2} \\
+%   \frac{\partial \chi_{ZNSSD}^2 }{\partial b} &= 2 \sum_i \left( a G_i + b_{opt} - F_i \right) = 0\\
+%   \Rightarrow b_{opt} &= \frac{\sum_i F_i -a G_i}{n}
+% \end{align}
+% These can be solved to obtain
+% \begin{align}
+%   a_{opt} &= \frac{\sum_i \mean{F_i} \mean{G_i}}{\sum_i \mean{G_i^2}}, &b_{opt}&= \mean{F} -\mean{G} \frac{\sum_i \mean{F_i} \mean{G_i}}{\sum_i \mean{G_i^2}} \\
+%   \text{where} \quad \quad \mean{F_i} &= F_i - \mean{F} \quad \quad \quad \quad \text{and} & \mean{G_i} &= G_i -\mean{G}
+% \end{align}
+% Substituting these into equation \ref{eq:cf znssd} results in the correlation criteria.
+% \begin{equation}
+%   \chi_{ZNSSD}^2 = \sum_i \left( \left( \frac{\sum_i \mean{F_i} \mean{G_i}}{\sum_i \mean{G_i^2}} G_i - \mean{G} \frac{\sum_i \mean{F_i} \mean{G_i}}{\sum_i \mean{G_i^2}} \right) - F_i + \mean{F} \right) ^2
+% \end{equation}
+
+
+
+
+
+
+
+
+
+
+
+
+% % Each correlation criteria is based off of a cost function which is usually a variation of the
+% % sum of squared differences between the intensities of the reference and investigated subset.
+% % They vary in the scaling and offset that is applied to the investigated subset’s intensity
+% % values.
+
+
+% A correlation criteria is a mathematical way of quantifying how well a subset in one image matches a subset in another image. It is used to determine whether the warp function parameters that has been solved for are sufficiently accurate to explain how the deformed image is related to the reference image. Furthermore the correlation criteria is usually used as the basis for the iterative solve that performs the correlation process. As such it is important that the correlation criteria reliably indicates the fit between the two subsets.
+
+% The zero-mean normalised sum of squared differences (ZNSSD) correlation criteria is one of the most robust options for a correlation criteria since it accounts for both lighting offset and scaling between the reference and deformed images. Correlation criteria are based off of a cost function which is usually a variation of the sum of squared difference between the pixel values of a subset of the reference image and a subset of the deformed image. The ZNSSD correlation criteria has the following cost function.
+% \begin{equation}
+% \label{eq:cf znssd}
+%   \chi_{ZNSSD}^2 = \sum_i \left( a G_i + b - F_i \right) ^2
+% \end{equation}
+% The offset $b$ and scaling $a$ can be solved for by treating it as an additional parameter of the optimisation problem. However it is preferred to determine the optimal estimates for $b$ and $a$ by taking the derivative of the cost function with respect to $a$ and $b$ separately and setting this to zero.
+% \begin{align}
+%   \frac{\partial \chi_{ZNSSD}^2 }{\partial a} &= 2 \sum_i \left( a_{opt} G_i + b- F_i \right) G_i = 0\\
+%   \Rightarrow a_{opt} &= \frac{\sum_i \left( F_i - b \right) G_i}{\sum_i G_i^2} \\
+%   \frac{\partial \chi_{ZNSSD}^2 }{\partial b} &= 2 \sum_i \left( a G_i + b_{opt} - F_i \right) = 0\\
+%   \Rightarrow b_{opt} &= \frac{\sum_i F_i -a G_i}{n}
+% \end{align}
+% Here $n$ is the number of pixels in the subset and $\mean{F}$ and $\mean{G}$  are the average intensity values for the reference and investigated subset respectively. These can be solved to obtain
+% \begin{align}
+%   a_{opt} &= \frac{\sum_i \mean{F_i} \mean{G_i}}{\sum_i \mean{G_i^2}}, &b_{opt}&= \mean{F} -\mean{G} \frac{\sum_i \mean{F_i} \mean{G_i}}{\sum_i \mean{G_i^2}} \\
+%   \text{where} \quad \quad \mean{F_i} &= F_i - \mean{F} \quad \quad \quad \quad \text{and} & \mean{G_i} &= G_i -\mean{G}
+% \end{align}
+% Substituting these into equation \ref{eq:cf znssd} results in the correlation criteria.
+% \begin{equation}
+%   \chi_{ZNSSD}^2 = \sum_i \left( \left( \frac{\sum_i \mean{F_i} \mean{G_i}}{\sum_i \mean{G_i^2}} G_i - \mean{G} \frac{\sum_i \mean{F_i} \mean{G_i}}{\sum_i \mean{G_i^2}} \right) - F_i + \mean{F} \right) ^2
+% \end{equation} 
+
+
+
 \section{Warp function}
 When applying DIC to to material science the deformation behaviour of materials under load must be taken into account. This is because the deformation of the material causes the speckle pattern on its surface to deform in the same way. This is an issue since the pattern contained within a subset of the reference image will be deformed in the second image which can cause difficulties in matching the two subsets.
 
@@ -1231,15 +1344,8 @@ Here $H$ is the Guass-Newton approximation to the Hessian matrix which remains c
 \end{align}
 The new approximation to the warp function parameters can then be extracted from this warp function matrix, $W(\bm{\zeta},\bm{p_{new}})$, and used in the next iteration of the solver.
 
-\section{Stopping criteria}
-The subset matching algorithm will continue to improve the warp function parameters until stopped. Thus a means of determining when the iterations should stop is needed. Ideally the iterations should stop once the correlation between the subsets is sufficiently accurate. Thus correlation could be halted once the correlation criteria coefficient has reached the desired value. However determining the correlation coefficient within each iteration is computationally expensive. Therefore the stopping criteria suggested by B. Pan \cite{panfast} is used since it is much more efficient to compute. This criteria halts the iterations once the norm of the warp function parameter update is less than $0.001$.
-\begin{align}
-  ||\Delta \bm{p}|| &= \sqrt{(\Delta u)^2 + (\Delta \tilde{x}\times\Delta \frac{\partial u}{\partial x}) + (\Delta \tilde{y}\times \Delta \frac{\partial u}{\partial y}) + (\Delta v)^2 + (\Delta \tilde{x}\times\Delta \frac{\partial v}{\partial x}) + (\Delta \tilde{y}\times \Delta \frac{\partial v}{\partial y})} \nonumber \\
-  &\text{where} \quad \Delta \tilde{x} = max(\Delta x) \quad \text{and} \quad \Delta \tilde{y} = max(\Delta y)
-\end{align}
-
 \section{Algorithm outline}
-The steps performed within the algorithm in order to achieve correlation are listed here in order to illustrate how the theory presented here is related to the code. It should be noted that the initial guesses for the warp function parameters were determined by the user selecting seed points in the reference and investigated images.
+The steps performed within the algorithm in order to achieve correlation are listed here in order to illustrate how the theory presented here is related to the code.
 
 \begin{enumerate}
   \item First $\mean{F}$ is determined for the reference subset.
@@ -1250,76 +1356,51 @@ The steps performed within the algorithm in order to achieve correlation are lis
   \item $\mean{G}$ and $\Delta G$ are then determined.
   \item With all the necessary values determined; equation \ref{eq:delta p} can be used to calculate $\Delta \bm{p}$.
   \item Then equation \ref{eq:get new p} is used to determine the updated approximation to the warp function parameters.
-  \item Step 4 until step 8 are repeated until the stopping criteria is satisfied.
+  \item Step 4 until step 8 are repeated until convergence or until the warp function parameters are considered good enough.
 \end{enumerate}
 
 
-\chapter{Results}
-This section provides the results of the Matlab codes in order to prove that it works. The results will be presented here in accordance to the layout of the project sections.
+% The warp function parameters, $p$, are iteratively improved to obtain a better correlation criteria value by a method of non-linear optimization similar to that of Newton's method. 
+% \begin{equation}
+%   p^{k+1} = p^k + \Delta p
+% \end{equation}
+% The equation for $\Delta p$ is dependent on the warp function, the correlation criteria and the gradient descent approximation used. For illustration purposes the method will be derived using the sum of squared difference correlation criteria, with the warp function given in equation \ref{eq:warp} and Guass-Newton gradient descent approximation \cite{lucasUnifying}. Thus the correlation criteria to be minimized is 
+% \begin{equation}
+%   \chi^2= \sum_{\bm{x}} \left( G(W(\bm{x},\bm{p} + \Delta \bm{p})) - F(\bm{x})  \right) ^2.
+% \end{equation}
+% Taking the Taylor expansion of $G(W(\bm{x},\bm{p} + \Delta \bm{p}))$, this equation reduces to
+% \begin{align}
+%   \label{eq:lucas chi}
+%   && \chi^2 &= \sum_{\bm{x}} \left( G(W(\bm{x},\bm{p})) +\nabla G \frac{\partial W(\bm{x},\bm{p})}{\partial \bm{p}} \Delta \bm{p} - F(\bm{x})  \right) ^2 &\\
+%   \text{where}
+%   &&\nabla G &= 
+%   \begin{bmatrix}
+%   \frac{\partial G(W(\bm{x},\bm{p}))}{\partial x} & \frac{\partial G(W(\bm{x},\bm{p}))}{\partial y}
+%   \end{bmatrix} &\\
+%   \text{and} &&\frac{\partial W(\bm{x},\bm{p})}{\partial \bm{p}} &= 
+%   \begin{bmatrix}
+%   \frac{\partial x_w}{\partial u} & \frac{\partial x_w}{\partial v} & \frac{\partial x_w}{\frac{\partial u}{\partial x}} & \frac{\partial x_w}{\frac{\partial u}{\partial y}} & \frac{\partial x_w}{\frac{\partial v}{\partial x}} & \frac{\partial x_w}{\frac{\partial v}{\partial y}} \\
+%   \frac{\partial y_w}{\partial u} & \frac{\partial y_w}{\partial v} & \frac{\partial y_w}{\frac{\partial u}{\partial x}} & \frac{\partial y_w}{\frac{\partial u}{\partial y}} & \frac{\partial y_w}{\frac{\partial v}{\partial x}} & \frac{\partial y_w}{\frac{\partial v}{\partial y}}
+%   \end{bmatrix} =
+%   \begin{bmatrix}
+%   1 & 0 & \Delta x & \Delta y & 0 & 0\\
+%   0 & 1 & 0 & 0 & \Delta x & \Delta y
+%   \end{bmatrix}\text{.}
+% \end{align}
+% Here $\nabla G$ is the gradient of the investigated subsets intensity calculated along its own coordinate frame but it is evaluated at the position given by the warp function. The optimal $\Delta \bm{p}$ can be found by taking the derivative of equation \ref{eq:lucas chi} with respect to $\Delta \bm{p}$ and setting it equal to zero.
 
-\section{Part A}
-Part A dealt with calibration only. The intrinsic parameters determined were
-\begin{equation}
-  \bm{K} = \begin{bmatrix}
-  657.6284016509245 & 0.3033509221103 & 303.7286777984020 & 0\\
-  0 & 658.4782284119660 & 245.6917686350662 & 0\\
-  0 & 0 & 0 & 0
-  \end{bmatrix}.
-\end{equation}
-The radial distortion parameters were determined to be $k_1 = -0.2488456293258$ and $k_2 = 0.1101356622771$. Using these calibration parameters the image "img01.tiff" was undistorted and is provided in figure \ref{fig:undist1}. Comparing this to the reference image in figure \ref{fig:reference1} it is clear that the calibration parameters determined are sufficiently accurate.
+% \begin{flalign}
+%   && \frac{\partial \chi ^2}{\partial \Delta \bm{p}} = 0 &= 2 \sum_{\bm{x}} \left[ \nabla G \frac{\partial W}{\partial \bm{p}} \right] \left[ G(W(\bm{x},\bm{p})) + \nabla G \frac{\partial W}{\partial \bm{p}} \Delta \bm{p} - F(\bm{x}) \right] &\\
+%   && \Delta \bm{p} &= H^{-1} \sum_{\bm{x}} \left[ \nabla G \frac{\partial W}{\partial \bm{p}} F(\bm{x}) - \nabla G \frac{\partial W}{\partial \bm{p}} G(W(\bm{x},\bm{p})) \right] &\\
+%   \text{where}  &&H &= \sum_{\bm{x}} \left[ \nabla G \frac{\partial W}{\partial \bm{p}} \right] ^T \left[ \nabla G \frac{\partial W}{\partial \bm{p}} \right]
+% \end{flalign}
+% Using this equation an incremental improvement to the warp function parameters can be found in each iteration thereby improving the warp function parameters until the convergence criteria is acceptable optimised. This procedure is carried out for many subsets in order to determine the displacements over the full surface of the specimen.
 
 
 
-\begin{figure}[h!]
-    \centering
-    \includegraphics[scale=0.6]{reference_image.jpg}
-    \caption{Reference image for comparison purposes}
-    \label{fig:reference1}
-\end{figure}
 
-\begin{figure}[h!]
-    \centering
-    \includegraphics[scale=0.6]{partA.jpg}
-    \caption{The distorted image "img01.tiff" which has been corrected for distortions}
-    \label{fig:undist1}
-\end{figure}
-
-\section{Part B}
-Part B deals with the correlation process only. The warp function parameters determined by the Matlab code are presented below.
-\begin{align}
-  u &= 5.03754\\
-  \frac{\partial u}{\partial x} &= 0.04073 \\
-  \frac{\partial u}{\partial y} &= -0.02176 \\
-  v &= -1.03562 \\
-  \frac{\partial v}{\partial x} &= -0.00915 \\
-  \frac{\partial v}{\partial y} &= 0.03048
-\end{align}
-The corresponding correlation coefficients are
-\begin{align}
-  C_{ZNSSD} &= 0.005872084419686 \\
-  C_{ZNCC} &= 0.997063957790157.
-\end{align}
-Both correlation coefficients have been presented here in order to illustrate that the $C_{ZNCC}$ coefficient is much easier to interpret. The determined warp function parameters were used to undeform the image "img02.tiff" to obtain figure \ref{fig:undist2}. Comparing this to the reference figure in figure \ref{fig:reference2} it can be seen that the determined warp function parameters are sufficiently accurate.
-
-\begin{figure}[h!]
-    \centering
-    \includegraphics[scale=0.6]{reference_image2.jpg}
-    \caption{Reference image for comparison purposes}
-    \label{fig:reference2}
-\end{figure}
-
-\begin{figure}[h!]
-    \centering
-    \includegraphics[scale=0.6]{partB.jpg}
-    \caption{The distorted image "img01.tiff" which has been corrected for distortions}
-    \label{fig:undist2}
-\end{figure}
-\section{Part C}
-Part C combine both Part A and Part B to determine the calibration parameters, use these calibration parameters to undistort the investigated image and then perform correlation on this undistorted image.
 
 \chapter{Conclusion}
-This document 
-
 This document proposes a research project aimed at creating a program for Matlab that is capable of performing DIC or DVC on a given set of images. The proposed program is aimed at providing the user with full control over the correlation process so that users no longer need to treat DIC and DVC as a black box. This project is not intended to have any direct application in industry but rather to provide researchers with a comprehensive tool to perform correlation to determine material deformation.
 
 The motivation of the project has been outlined along with literature review on DIC. The objectives of the project have also been outlined with a research plan which is aimed at achieving these objectives. A time-line for the activities of the research plan is also provided. It is evident that sufficient knowledge and resources are available for the successful completion of this project.
