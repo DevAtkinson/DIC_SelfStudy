@@ -1,6 +1,7 @@
 \documentclass[[12pt,oneside,openany,a4paper, %... Layout
 english, %... Global lang drivers{}
 masters-t, goldenblock]{usthesis} 
+\usepackage{float} %for images
 \usepackage{graphicx}
 % \usepackage[colorinlistoftodos,prependcaption,textsize=small,disable]{todonotes}
 \usepackage[colorinlistoftodos,prependcaption,textsize=small]{todonotes}
@@ -89,21 +90,7 @@ node [pos=.5, /pgfgantt/link label anchor] {\ganttlinklabel}
 \tableofcontents
 \listoffigures
 \chapter{Introduction}
-Digital Image Correlation (DIC) has become a popular tool in the field of material science to measure the deformations and displacements of test specimens as they are loaded. This project focuses on the creation of a simple DIC program that is capable of taking in a set of calibration images and determining the calibration parameters. Additionally it will then be capable of performing correlation between 2 images.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+Digital Image Correlation (DIC) has become a popular tool in the field of material science to measure the deformations and displacements of test specimens as they are loaded. In order to gain a better understanding of the DIC process this project aims to create code in Matlab that is capable of performing the basic elements of DIC. This includes the calibration process, which is used to relate optical flow between images to metric displacements in the real world, and the correlation process which determines the optical flow between images. The purpose of this report is to present the mathematical basis used within the Matlab codes.
 
 \chapter{Theory}
 This chapter outlines the theory that is relevant for Digital Image Correlation. First the digital camera is discussed in order to understand how it captures light and stores it as data. Thereafter the optical system, made of a system of lenses and apertures, which focuses the light for the digital camera is reviewed since it has a significant influence on how a three dimensional scene is converted into two dimensional data. Then the camera model that is used to mathematically relate three dimensional coordinates in the real world to two dimensional pixels in the image is presented. Lastly the distortions that are caused by the slight imperfections of lenses are explained. 
@@ -627,7 +614,6 @@ Here $\bm{e}_t$ is the tangential unit vector and $\mean{\theta_d}$ is the orien
 
 
 \chapter{Calibration}
-
 Calibration is a necessary process that must be completed in order to extract metric information from images. The calibration process solves for parameters that define the optical characteristics of the camera, parameters that define the orientation and position of the camera coordinate system to the world coordinate system and parameters that define the distortions that must be corrected for in the images. By determining all of these parameters the calibration process will have solved the camera model that predicts how an object in three dimensional space is related to the pixel, which containing the light reflected by the object, in the image captured of the object.
 
 The parameters that define the optical characteristics and the distortions are referred to as intrinsic parameters since they are fixed for a specific camera. The parameters that describe the orientation and position of the camera within the world coordinate system are extrinsic parameters because they change if the camera is moved. \todo{explain intrinsic and extrinsic better}
@@ -642,13 +628,13 @@ Inverse problems are typlically hard to solve and calibration is no exception. I
 This inverse problem is sensitive to errors in the 3D world coordinates (inputs) and 2D image coordinates (outputs) used. Thus these need to be known to a high degree of accuracy in order to solve for the intrinsic and extrinsic camera parameters reliably. This is achieved by using a calibration plate.
 
 \section{Calibration plate}
-A calibration plate is an object with a flat surface containing a high-contrast, regular pattern. The pattern is such that it contains definitive, point-like features which can be located to a high degree of accuracy within images taken of it. For example a checker board pattern allows for accurate calculation of the points at the corners of the squares. Thus the coordinates of these point-like features on the calibration plate will be known (inputs) and the coordinates of these point-like features in the image can be determined to a high degree of accuracy (outputs).
+A calibration plate is an object with a flat surface containing a high-contrast, regular pattern. The pattern is such that it contains definitive, point-like features which can be located to a high degree of accuracy within images taken of it. For example a checker board pattern allows for accurate calculation of the points at the corners of the squares. Thus the coordinates of these point-like features on the calibration plate will be known (inputs) and the coordinates of these point-like features in the image can be determined to a high degree of accuracy (outputs). These definitive, point-like features are hereafter referred to as calibration targets.
 
 Since images inherently contain some level of noise it is best to have an overdetermined system of equations. This is accomplished by taking multiple images of the calibration plate and changing the relative position and orientation between the calibration plate and the camera for each image. This effectively reduces the effects of noise; making the system more robust.
 
 \section{Homography}
 \label{sec: homography}
-Homography is a transformation that can be applied to points on a plane to bring it into alignment with another plane. It is used to bring the points on the calibration plate in the world coordinate system into alignment with their location in the image in the sensor coordinate system. The transformation from world coordinates to sensor coordinates in equation \ref{eq:world 2 sensor} is a type of homography.
+Homography is a transformation that can be applied to points on a plane to bring it into alignment with another plane. It is used to bring the calibration targets on the calibration plate in the world coordinate system into alignment with their location in the image in the sensor coordinate system. The transformation from world coordinates to sensor coordinates in equation \ref{eq:world 2 sensor} is a type of homography.
 
 Treating the calibration plate such that it lies in the x-y plane of the world coordinate system; the homography, $\bm{H}$, for calibration is given by the following equation.
 \begin{equation}
@@ -676,7 +662,7 @@ Treating the calibration plate such that it lies in the x-y plane of the world c
   1
   \end{bmatrix} \\
 \end{equation}
-This can be reduced to 
+Since the calibration targets are set to lie on the x-y plane within the world coordinate system this eqaution can be reduced to 
 \begin{align}
   \begin{bmatrix}
   x_s \\
@@ -710,9 +696,9 @@ This can be reduced to
   \end{bmatrix} \\
   &= \alpha
   \begin{bmatrix}
-  h_1 & h_2 & h_3 \\
-  h_4 & h_5 & h_6 \\
-  h_7 & h_8 & h_9
+  h_{11} & h_{12} & h_{13} \\
+  h_{21} & h_{22} & h_{23} \\
+  h_{31} & h_{32} & h_{33}
   \end{bmatrix} 
   \begin{bmatrix}
   x_w \\
@@ -733,23 +719,23 @@ Here $\bm{r}_1$ and $\bm{r}_2$ are the first and second columns of the rotation 
 \section{Estimating homography with direct linear transformation}
 The homographies that relate the world coordinates of the calibration plate targets to the targets in the image can be estimated using direct linear transformation (DLT) \cite{zhangtut}. Equation \ref{eq: homography 1} can be written out as
 \begin{align}
-  x_s &= \alpha \left( h_1 x_w + h_2 y_w + h_3 \right) \label{eq: homo line 1} \\
-  y_s &= \alpha \left( h_4 x_w + h_5 y_w + h_6 \right) \label{eq: homo line 2} \\
-  1 &= \alpha \left( h_7 x_w + h_8 y_w + h_9 \right) \label{eq: homo line 3}.
+  x_s &= \alpha \left( h_{11} x_w + h_{12} y_w + h_{13} \right) \label{eq: homo line 1} \\
+  y_s &= \alpha \left( h_{21} x_w + h_{22} y_w + h_{23} \right) \label{eq: homo line 2} \\
+  1 &= \alpha \left( h_{31} x_w + h_{32} y_w + h_{33} \right) \label{eq: homo line 3}.
 \end{align}
 The scale factor, $\alpha$, can be eliminated by dividing equations \ref{eq: homo line 1} and \ref{eq: homo line 2} by \ref{eq: homo line 3} to get
 \begin{align}
-  x_s \left( h_7 x_w + h_8 y_w + h_9 \right) &= \left( h_1 x_w + h_2 y_w + h_3 \right) \\
-  y_s \left( h_7 x_w + h_8 y_w + h_9 \right) &= \left( h_4 x_w + h_5 y_w + h_6 \right)
+  x_s \left( h_{31} x_w + h_{32} y_w + h_{33} \right) &= \left( h_{11} x_w + h_{12} y_w + h_{13} \right) \\
+  y_s \left( h_{31} x_w + h_{32} y_w + h_{33} \right) &= \left( h_{21} x_w + h_{22} y_w + h_{23} \right)
 \end{align}
 These equations then reduce to
 \begin{align}
-  - h_y x_w x_s - h_8 y_w x_s + h_1 x_w + h_2 y_w +h_3 &= h_9 x_s \label{eq: solve homo 1}\\
-  - h_7 x_w y_s - h_8 y_w y_s + h_4 x_w + h_5 y_w + h_6 &= h_9 y_s. \label{eq: solve homo 2}
+  - h_y x_w x_s - h_{32} y_w x_s + h_{11} x_w + h_{12} y_w +h_{13} &= h_{33} x_s \label{eq: solve homo 1}\\
+  - h_{31} x_w y_s - h_{32} y_w y_s + h_{21} x_w + h_{22} y_w + h_{23} &= h_{33} y_s. \label{eq: solve homo 2}
 \end{align}
-In order to avoid the trivial solution where every element in the homogrpahy matrix is equal to zero; constraints need to be placed on the elements of the homography matrix. In this case the element $h_9$ is set equal to 1 however other constraints are also possible such as $h_7^2 + h_8^2 + h_9^2 = 1$. Note that if the true value of $h_9$ is close to zero then this assumption will introduce a singluarity \cite{emerging}.
+In order to avoid the trivial solution where every element in the homogrpahy matrix is equal to zero; constraints need to be placed on the elements of the homography matrix. In this case the element $h_{33}$ is set equal to 1 however other constraints are also possible such as $h_{31}^2 + h_{32}^2 + h_{33}^2 = 1$. Note that if the true value of $h_{33}$ is close to zero then this assumption will introduce a singluarity \cite{emerging}.
 
-Each target, having points $x_{w_i}$ and $y_{w_i}$, on the calibration plate that is captured within an image of the calibration plate, having points $x_{s_i}$ and $y_{s_i}$, provides two equations of the form of equations \ref{eq: solve homo 1} and \ref{eq: solve homo 2}. These are then combined into an equation of the form
+Each calibration target, having points $x_{w_i}$ and $y_{w_i}$, on the calibration plate that is captured within an image of the calibration plate, having points $x_{s_i}$ and $y_{s_i}$, provides two relations of the form of equations \ref{eq: solve homo 1} and \ref{eq: solve homo 2}. These equations are then stacked together into an equation of the form
 \begin{align}
   \begin{bmatrix}
   x_{w_1} & y_{w_1} & 1 & 0 & 0 & 0 & -x_{w_1} x_{s_1} & -y_{w_1} x_{s_1} \\
@@ -759,14 +745,14 @@ Each target, having points $x_{w_i}$ and $y_{w_i}$, on the calibration plate tha
   \vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots 
   \end{bmatrix}
   \begin{bmatrix}
-  h_1 \\
-  h_2 \\
-  h_3 \\
-  h_4 \\
-  h_5 \\
-  h_6 \\
-  h_7 \\
-  h_8
+  h_{11} \\
+  h_{12} \\
+  h_{13} \\
+  h_{21} \\
+  h_{22} \\
+  h_{23} \\
+  h_{31} \\
+  h_{32}
   \end{bmatrix} =
   \begin{bmatrix}
   x_{s_1} \\
@@ -777,14 +763,14 @@ Each target, having points $x_{w_i}$ and $y_{w_i}$, on the calibration plate tha
   \end{bmatrix}
   \label{eq:DLT}
 \end{align}
-This overdetermined system of equations then can be used to solve for the homography matrices of each calibration image using least squares. This is the first step involved in calibration. \todo{speak about normalisation}
+This overdetermined system of equations then can be used to solve for the homography matrices of each calibration image using least squares. This is the first step involved in calibration.
 
 % http://www.kwon3d.com/theory/dlt/dlt.html
 
 \subsection{Direct linear transformation normalisation}
-In practice the used of the DLT method to find estimates to the homographies was found to be sensitive to noise in the images. It was discovered by R. Hartley \cite{DLTnorm} that the DLT method can be made much more robust to noise by applying translation and scaling to the image and world coordinate points prior to performing DLT. Specifically the image and world coordinate points are first translated such that the origin of each coordinate system is located at the centroid of the points defined in that coordinate system. Then the coordinates are scaled such that the average distance of the coordinates from the origin is equal to $\sqrt{2}$. This scaling and translation has the effect of reducing the condition number of the matrix in equation \ref{eq:DLT}.
+In practice the use of the DLT method to find estimates to the homographies was found to be sensitive to noise in the images. It was discovered by R. Hartley \cite{DLTnorm} that the DLT method can be made much more robust to noise by applying translation and scaling to the image and world coordinate points prior to performing DLT. Specifically the sensor and world coordinate points are first translated such that the origin of each coordinate system is located at the centroid of the points defined in that coordinate system. Then the coordinates are scaled such that the average distance of the coordinates from the origin is equal to $\sqrt{2}$. This scaling and translation has the effect of reducing the condition number of the matrix in equation \ref{eq:DLT}.
 
-The translation and scaling of the coordinates is done separately for the image and world coordinates as shown with $\bm{X_{w}'}$ and $\bm{X_{s}'}$ representing the transformed and scaled versions of the world and image coordinate points respectively.
+The translation and scaling of the coordinates is done separately for the sensor and world coordinates as shown with $\bm{X_{w}'}$ and $\bm{X_{s}'}$ representing the transformed and scaled versions of the world and sensor coordinate points respectively.
 \begin{align}
   \bm{X_{w}'} &= \bm{T_w} \bm{X_w} \\
   \bm{X_{s}'} &= \bm{T_s} \bm{X_s}
@@ -805,7 +791,7 @@ The absolute conic lies on the plane at infinity and is defined by the set of po
   \bm{x}_{ac}^T \bm{x}_{ac}=x^2 + y^2 + z^2 = 0 
   \label{eq:conditions of absolute conic}
 \end{align}
-Here tilde is used to indicate homogeneous coordinates whereas $\bm{x}_{ac} = [x, y, z]^T$ would be the point in Euclidean space.
+Here tilde is used to indicate homogeneous coordinates (projective space) whereas $\bm{x}_{ac} = [x, y, z]^T$ would be the point in Euclidean space.
 
 Thus it is this conic of purely imaginary points that lies upon the plane at infinity. The importance of the absolute conic is that it is invariant under any Euclidean transformations. In other words the relative position of the absolute conic to a moving camera is unaffected by extrinsic parameters. Consider a point $\bm{x}_{ac}$ in Euclidean space in the world coordinate system that lies on the absolute conic. It has homogeneous coordinates $\tilde{\bm{x}}_{ac}=[\bm{x}_{ac}^T, 0]^T$ in projective space. Applying a different rotation and translation to this point to obtain $\tilde{\bm{x}}_{ac}'$, which is equivalent to moving the camera in the world coordinate system, a corresponding point is obtained in the camera coordinate system.
 \begin{align}
@@ -1270,14 +1256,14 @@ The radial distortion parameters were determined to be $k_1 = -0.2488456293258$ 
 
 
 
-\begin{figure}[h!]
+\begin{figure}[H]
     \centering
     \includegraphics[scale=0.6]{reference_image.jpg}
     \caption{Reference image for comparison purposes}
     \label{fig:reference1}
 \end{figure}
 
-\begin{figure}[h!]
+\begin{figure}[H]
     \centering
     \includegraphics[scale=0.6]{partA.jpg}
     \caption{The distorted image "img01.tiff" which has been corrected for distortions}
@@ -1301,29 +1287,42 @@ The corresponding correlation coefficients are
 \end{align}
 Both correlation coefficients have been presented here in order to illustrate that the $C_{ZNCC}$ coefficient is much easier to interpret. The determined warp function parameters were used to undeform the image "img02.tiff" to obtain figure \ref{fig:undist2}. Comparing this to the reference figure in figure \ref{fig:reference2} it can be seen that the determined warp function parameters are sufficiently accurate.
 
-\begin{figure}[h!]
+\begin{figure}[H]
     \centering
     \includegraphics[scale=0.6]{reference_image2.jpg}
     \caption{Reference image for comparison purposes}
     \label{fig:reference2}
 \end{figure}
 
-\begin{figure}[h!]
+\begin{figure}[H]
     \centering
     \includegraphics[scale=0.6]{partB.jpg}
     \caption{The distorted image "img01.tiff" which has been corrected for distortions}
     \label{fig:undist2}
 \end{figure}
 \section{Part C}
-Part C combine both Part A and Part B to determine the calibration parameters, use these calibration parameters to undistort the investigated image and then perform correlation on this undistorted image.
+Part C combine both Part A and Part B. The calibration code of Part A is used to determine the calibration parameters for the camera system. These camera parameters are then used to undistort image "img03.tif" such that it is free of lens distortion. Then the correlation code is applied to this undistorted image in order to determine the warp function parameters. These warp function parameters are then used to undeform the image. This undeformed image is shown in figure \ref{fig:undist3}. Comparing this image to the original undistorted image in figure \ref{fig:reference3} it seems that a 
+
+It is important to note that this method of using the calibration parameters to undistort the image prior to performing correlation on the image is not correct. This is because interpolation is used to undistort the image and additional interpolation is used within the correlation code. Thus by introducing an extra case of interpolation the reliability of the data is compromised.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.6]{reference_image2.jpg}
+    \caption{Reference image for comparison purposes}
+    \label{fig:reference3}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.6]{partB.jpg}
+    \caption{The distorted image "img01.tiff" which has been corrected for distortions}
+    \label{fig:undist3}
+\end{figure}
 
 \chapter{Conclusion}
-This document 
+This document outlines the Digital Image Correlation process. It presents the background information on camera optics and the mathematical relation used to model these optics in a camera model. Thereafter the calibration process is discussed which determines the parameter values for the camera model. Correlation is then reviewed with focus on the inverse compositional Lucas-Kanade algorithm. Finally the results of the Matlab codes are given in order to illustrate that the methods presented here are correct.
 
-This document proposes a research project aimed at creating a program for Matlab that is capable of performing DIC or DVC on a given set of images. The proposed program is aimed at providing the user with full control over the correlation process so that users no longer need to treat DIC and DVC as a black box. This project is not intended to have any direct application in industry but rather to provide researchers with a comprehensive tool to perform correlation to determine material deformation.
 
-The motivation of the project has been outlined along with literature review on DIC. The objectives of the project have also been outlined with a research plan which is aimed at achieving these objectives. A time-line for the activities of the research plan is also provided. It is evident that sufficient knowledge and resources are available for the successful completion of this project.
-% \section{Outline of chapters}
 \bibliography{references}
 \bibliographystyle{plain}
 \end{document}
