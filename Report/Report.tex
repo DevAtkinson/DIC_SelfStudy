@@ -3,8 +3,8 @@ english, %... Global lang drivers{}
 masters-t, goldenblock]{usthesis} 
 \usepackage{float} %for images
 \usepackage{graphicx}
-% \usepackage[colorinlistoftodos,prependcaption,textsize=small,disable]{todonotes}
-\usepackage[colorinlistoftodos,prependcaption,textsize=small]{todonotes}
+\usepackage[colorinlistoftodos,prependcaption,textsize=small,disable]{todonotes}
+% \usepackage[colorinlistoftodos,prependcaption,textsize=small]{todonotes}
 \usepackage{pgfgantt}
 \usepackage{float} %so that it can use the 'f' float option
 \usepackage{pdflscape} %allow you to make landscape pages
@@ -74,8 +74,8 @@ node [pos=.5, /pgfgantt/link label anchor] {\ganttlinklabel}
 
 \begin{document}
 \includepdf{Cover.pdf}
-\includepdf{TitlePage.pdf}
-\includepdf{plagiarism.pdf}
+% \includepdf{TitlePage.pdf}
+\includepdf{plagiarism_signed.pdf}
 % \chapter*{Abstract}
 % Digital Image Correlation (DIC) and Digital Volume Correlation (DVC) are becoming widely used tools, in the field of material science, to measure the displacements and deformations of specimens. However the high cost of commercial DIC and DVC software and the limited control offered over the correlation process in both commercial and open-source software limits its widespread adoption. This paper proposes a project which aims to create a Matlab based program capable of performing 2D DIC and DVC on a given set of images while allowing the user control over the correlation process. It is hypothesised that the different DIC algorithms use different methods to perform the same tasks in the correlation process. Thus by analysing these algorithms it is possible to combine these different methods into one program which will allow the user to select which methods to use for the various correlation tasks. If successful, this project will produce a freely available program, which offers many of the correlation methods of the different DIC algorithms, so that users will be able to perform in depth DIC and DVC analyses.
 
@@ -287,10 +287,10 @@ This imaging model is advantageous in that the sensor plane coordinates are no l
 \label{sec:coord sys}
 Images are only capable of storing two dimensional information whereas we live in a three dimensional world. Thus cameras convert three dimensional information from the world coordinate system into two dimensional information in the sensor coordinate system when a picture is taken as shown in figure \ref{fig:coordsys}. The mathematical relationship between these two coordinate systems is discussed here.
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
-    \includegraphics[scale=0.5]{CoordinateSystems}
-    \caption{The conversion between coordinate systems that occurs when an image is taken}
+    \includegraphics[scale=0.5]{CoordinateSystems2}
+    \caption{The conversion between coordinate systems that occurs when an image is taken \cite{sutton2009image}}
     \label{fig:coordsys}
 \end{figure}
 % Throughout this project thin lenses are assumed. A thin lens is one in which its thickness is negligible in comparison with its focal length or radius of curvature. Additionally the paraxial approximation is assumed which states that light rays passing through the lens do so with a small angle to the lens's optical axis and pass through the lens close to the optical axis. This leads to the small angle approximation.
@@ -301,7 +301,7 @@ Images are only capable of storing two dimensional information whereas we live i
 \subsection{Homogeneous coordinates}
 It is common knowledge that any object's shape can be fully defined using distances and angles in 3D Euclidean space. However when an image is taken of this object these distances and angles become distorted. For example railway tracks consist of two beams that remain parallel to one another at a set distance apart in Euclidean space but in an image of the railway track (projective space) these beams appear to get closer and closer to one another as seen in figure \ref{fig:traintrack}. Therefore the parallelism between the beams in Euclidean space is distorted in projective space. This occurs as a result of reducing 3D information to a 2D image. \todo{add image}
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \includegraphics[scale=0.1]{TrainTrack}
     \caption{How projective space distorts parallelism present in Euclidean space}
@@ -889,7 +889,7 @@ Since these points lie on the absolute conic they are invariant under Euclidean 
 \begin{equation}
   x_s^{\infty} = \bm{K} \left( \bm{r}_1 \pm \bm{r}_2 \right) = \bm{h}_1 \pm i \bm{h}_2.
 \end{equation}
-Substituting these points into equation \ref{eq:conditions of absolute conic} results in
+Here $\bm{h}_i = [h_{1i} \, h_{2i} \, h_{3i}]^T$ is the i\textsuperscript{th} column of the homography matrix. Substituting these points into equation \ref{eq:conditions of absolute conic} results in
 \begin{equation}
   \left( \bm{h}_1 \pm i \bm{h}_2 \right)^T \bm{K}^{-T} \bm{K}^{-1} \left( \bm{h}_1 \pm i \bm{h}_2 \right) = 0.
 \end{equation}
@@ -900,7 +900,7 @@ Requiring both the imaginary and real parts of this equation to equal zero resul
   \label{eq:intrinsic constraints 2}
   \bm{h}_1^T \bm{K}^{-T} \bm{K}^{-1} \bm{h}_1 &= \bm{h}_2^T \bm{K}^{-T} \bm{K}^{-1} \bm{h}_2
 \end{align}
-Where $\bm{h}_i = [h_{i1} \, h_{i2} \, h_{i3}]^T$ is the i\textsuperscript{th} column of the homography matrix.
+% Where $\bm{h}_i = [h_{i1} \, h_{i2} \, h_{i3}]^T$ is the i\textsuperscript{th} column of the homography matrix.
 
 \section{Intrinsic parameters and the absolute conic}
 \label{sec: parameters and the absolute conic}
@@ -1247,14 +1247,12 @@ This section provides the results of the Matlab codes in order to prove that it 
 Part A dealt with calibration only. The intrinsic parameters determined were
 \begin{equation}
   \bm{K} = \begin{bmatrix}
-  657.6284016509245 & 0.3033509221103 & 303.7286777984020 & 0\\
-  0 & 658.4782284119660 & 245.6917686350662 & 0\\
+  657.62840 & 0.30335 & 303.72868 & 0\\
+  0 & 658.47823 & 245.69177 & 0\\
   0 & 0 & 0 & 0
   \end{bmatrix}.
 \end{equation}
-The radial distortion parameters were determined to be $k_1 = -0.2488456293258$ and $k_2 = 0.1101356622771$. Using these calibration parameters the image "img01.tiff" was undistorted and is provided in figure \ref{fig:undist1}. Comparing this to the reference image in figure \ref{fig:reference1} it is clear that the calibration parameters determined are sufficiently accurate.
-
-
+The radial distortion parameters were determined to be $k_1 = -0.24885$ and $k_2 = 0.11014$. Using these calibration parameters the image "img01.tiff" was undistorted and is provided in figure \ref{fig:undist1}. Comparing this to the reference image in figure \ref{fig:reference1} it is clear that the calibration parameters determined are sufficiently accurate however differences between the images are noticeable. These differences are likely as a result of additional distortion types that have not been taken into account due to the complexity that these additional distortions would introduce.
 
 \begin{figure}[H]
     \centering
@@ -1282,8 +1280,8 @@ Part B deals with the correlation process only. The warp function parameters det
 \end{align}
 The corresponding correlation coefficients are
 \begin{align}
-  C_{ZNSSD} &= 0.005872084419686 \\
-  C_{ZNCC} &= 0.997063957790157.
+  C_{ZNSSD} &= 0.00587 \\
+  C_{ZNCC} &= 0.99706.
 \end{align}
 Both correlation coefficients have been presented here in order to illustrate that the $C_{ZNCC}$ coefficient is much easier to interpret. The determined warp function parameters were used to undeform the image "img02.tiff" to obtain figure \ref{fig:undist2}. Comparing this to the reference figure in figure \ref{fig:reference2} it can be seen that the determined warp function parameters are sufficiently accurate.
 
@@ -1297,13 +1295,30 @@ Both correlation coefficients have been presented here in order to illustrate th
 \begin{figure}[H]
     \centering
     \includegraphics[scale=0.6]{partB.jpg}
-    \caption{The distorted image "img01.tiff" which has been corrected for distortions}
+    \caption{The distorted image "img02.tiff" which has been corrected for distortions}
     \label{fig:undist2}
 \end{figure}
 \section{Part C}
-Part C combine both Part A and Part B. The calibration code of Part A is used to determine the calibration parameters for the camera system. These camera parameters are then used to undistort image "img03.tif" such that it is free of lens distortion. Then the correlation code is applied to this undistorted image in order to determine the warp function parameters. These warp function parameters are then used to undeform the image. This undeformed image is shown in figure \ref{fig:undist3}. Comparing this image to the original undistorted image in figure \ref{fig:reference3} it seems that a 
+Part C combine both Part A and Part B. The calibration code of Part A is used to determine the calibration parameters for the camera system. These camera parameters are then used to undistort image "img03.tif" such that it is free of lens distortion. Then the correlation code is applied to this undistorted image in order to determine the warp function parameters. These warp function parameters are then used to undeform the image. This undeformed image is shown in figure \ref{fig:undist3}. Comparing this image to the original undistorted image in figure \ref{fig:reference3} it seems that the calibration parameters and warp function parameters were sufficiently accurate. However the actual warp function parameters differ from those of Part B as shown below and the correlation coefficient is not as good as in Part B.
+\begin{align}
+  u &= 5.11364\\
+  \frac{\partial u}{\partial x} &= 0.04348 \\
+  \frac{\partial u}{\partial y} &= -0.02214 \\
+  v &= -1.06509 \\
+  \frac{\partial v}{\partial x} &= -0.00918 \\
+  \frac{\partial v}{\partial y} &= 0.03071
+\end{align}
 
-It is important to note that this method of using the calibration parameters to undistort the image prior to performing correlation on the image is not correct. This is because interpolation is used to undistort the image and additional interpolation is used within the correlation code. Thus by introducing an extra case of interpolation the reliability of the data is compromised.
+\begin{align}
+  C_{ZNSSD} &= 0.00838 \\
+  C_{ZNCC} &= 0.99581
+\end{align}
+
+The reason that these warp function parameters differ from those of Part B is that the this method of using the calibration parameters to undistort the image prior to performing correlation on the image is not correct. This is because interpolation is used to undistort the image and additional interpolation is used within the correlation code. 
+
+Thus by introducing an extra case of interpolation the reliability of the data is compromised. This is reflected in the correlation coefficients which differ from those in Part B. Note that the standard deviations of the warp function parameters for both Part B and Part C were on the order of magnitude of $10^{-13}$ sampled over one thousand correlation runs. The calibration parameters for Part C are not presented since they are the same as the values in Part A.
+
+% It is important to note that this method of using the calibration parameters to undistort the image prior to performing correlation on the image is not correct. This is because interpolation is used to undistort the image and additional interpolation is used within the correlation code. Thus by introducing an extra case of interpolation the reliability of the data is compromised.
 
 \begin{figure}[H]
     \centering
@@ -1314,8 +1329,8 @@ It is important to note that this method of using the calibration parameters to 
 
 \begin{figure}[H]
     \centering
-    \includegraphics[scale=0.6]{partB.jpg}
-    \caption{The distorted image "img01.tiff" which has been corrected for distortions}
+    \includegraphics[scale=0.6]{partC.jpg}
+    \caption{The distorted image "img03.tiff" which has been corrected for distortions}
     \label{fig:undist3}
 \end{figure}
 

@@ -1,53 +1,53 @@
-\contentsline {chapter}{Contents}{4}
-\contentsline {chapter}{List of Figures}{6}
-\contentsline {chapter}{\numberline {1}Introduction}{7}
-\contentsline {chapter}{\numberline {2}Theory}{8}
-\contentsline {section}{\numberline {2.1}Digital cameras}{8}
-\contentsline {section}{\numberline {2.2}Camera optics}{8}
-\contentsline {subsection}{\numberline {2.2.1}Circle of confusion}{10}
-\contentsline {subsection}{\numberline {2.2.2}Depth of field}{10}
-\contentsline {subsection}{\numberline {2.2.3}Field of view}{11}
-\contentsline {subsection}{\numberline {2.2.4}Transformation to image plane}{12}
-\contentsline {subsection}{\numberline {2.2.5}Front image plane model}{12}
-\contentsline {section}{\numberline {2.3}Coordinate systems}{12}
+\contentsline {chapter}{Contents}{3}
+\contentsline {chapter}{List of Figures}{5}
+\contentsline {chapter}{\numberline {1}Introduction}{6}
+\contentsline {chapter}{\numberline {2}Theory}{7}
+\contentsline {section}{\numberline {2.1}Digital cameras}{7}
+\contentsline {section}{\numberline {2.2}Camera optics}{7}
+\contentsline {subsection}{\numberline {2.2.1}Circle of confusion}{9}
+\contentsline {subsection}{\numberline {2.2.2}Depth of field}{9}
+\contentsline {subsection}{\numberline {2.2.3}Field of view}{10}
+\contentsline {subsection}{\numberline {2.2.4}Transformation to image plane}{11}
+\contentsline {subsection}{\numberline {2.2.5}Front image plane model}{11}
+\contentsline {section}{\numberline {2.3}Coordinate systems}{11}
 \contentsline {subsection}{\numberline {2.3.1}Homogeneous coordinates}{12}
 \contentsline {subsection}{\numberline {2.3.2}World to camera coordinate system}{13}
-\contentsline {subsection}{\numberline {2.3.3}Camera and imaging plane coordinates}{14}
-\contentsline {subsection}{\numberline {2.3.4}Image plane and sensor coordinates}{14}
-\contentsline {subsection}{\numberline {2.3.5}World to sensor coordinates}{15}
-\contentsline {section}{\numberline {2.4}Distortion}{15}
+\contentsline {subsection}{\numberline {2.3.3}Camera and imaging plane coordinates}{13}
+\contentsline {subsection}{\numberline {2.3.4}Image plane and sensor coordinates}{13}
+\contentsline {subsection}{\numberline {2.3.5}World to sensor coordinates}{14}
+\contentsline {section}{\numberline {2.4}Distortion}{14}
 \contentsline {subsection}{\numberline {2.4.1}Spherical distortion}{15}
-\contentsline {subsection}{\numberline {2.4.2}Coma distortion}{16}
-\contentsline {subsection}{\numberline {2.4.3}Astigmatism}{16}
-\contentsline {subsection}{\numberline {2.4.4}Curvature of field}{16}
-\contentsline {subsection}{\numberline {2.4.5}Linear}{17}
-\contentsline {subsection}{\numberline {2.4.6}Radial}{17}
-\contentsline {subsection}{\numberline {2.4.7}De-centering}{17}
-\contentsline {chapter}{\numberline {3}Calibration}{18}
-\contentsline {section}{\numberline {3.1}Inverse problem}{18}
-\contentsline {section}{\numberline {3.2}Calibration plate}{19}
-\contentsline {section}{\numberline {3.3}Homography}{19}
-\contentsline {section}{\numberline {3.4}Estimating homography with direct linear transformation}{20}
-\contentsline {subsection}{\numberline {3.4.1}Direct linear transformation normalisation}{20}
-\contentsline {section}{\numberline {3.5}Absolute conic}{21}
-\contentsline {section}{\numberline {3.6}Constraints on intrinsic parameters}{22}
-\contentsline {section}{\numberline {3.7}Intrinsic parameters and the absolute conic}{23}
-\contentsline {section}{\numberline {3.8}Distortion in Calibration}{24}
-\contentsline {section}{\numberline {3.9}Non-linear optimisation}{25}
-\contentsline {chapter}{\numberline {4}Correlation}{26}
-\contentsline {section}{\numberline {4.1}Correspondence problem and speckle patterns}{26}
-\contentsline {section}{\numberline {4.2}Correlation criteria}{27}
-\contentsline {subsection}{\numberline {4.2.1}Cross-Correlation}{27}
-\contentsline {subsection}{\numberline {4.2.2}Sum of Squared Difference}{28}
-\contentsline {subsection}{\numberline {4.2.3}Relation between ZNCC and ZNSSD}{28}
-\contentsline {section}{\numberline {4.3}Warp function}{28}
-\contentsline {section}{\numberline {4.4}Interpolation}{29}
-\contentsline {section}{\numberline {4.5}Subset matching}{29}
-\contentsline {section}{\numberline {4.6}Stopping criteria}{31}
-\contentsline {section}{\numberline {4.7}Algorithm outline}{31}
-\contentsline {chapter}{\numberline {5}Results}{33}
-\contentsline {section}{\numberline {5.1}Part A}{33}
-\contentsline {section}{\numberline {5.2}Part B}{35}
-\contentsline {section}{\numberline {5.3}Part C}{36}
+\contentsline {subsection}{\numberline {2.4.2}Coma distortion}{15}
+\contentsline {subsection}{\numberline {2.4.3}Astigmatism}{15}
+\contentsline {subsection}{\numberline {2.4.4}Curvature of field}{15}
+\contentsline {subsection}{\numberline {2.4.5}Linear}{16}
+\contentsline {subsection}{\numberline {2.4.6}Radial}{16}
+\contentsline {subsection}{\numberline {2.4.7}De-centering}{16}
+\contentsline {chapter}{\numberline {3}Calibration}{17}
+\contentsline {section}{\numberline {3.1}Inverse problem}{17}
+\contentsline {section}{\numberline {3.2}Calibration plate}{18}
+\contentsline {section}{\numberline {3.3}Homography}{18}
+\contentsline {section}{\numberline {3.4}Estimating homography with direct linear transformation}{19}
+\contentsline {subsection}{\numberline {3.4.1}Direct linear transformation normalisation}{19}
+\contentsline {section}{\numberline {3.5}Absolute conic}{20}
+\contentsline {section}{\numberline {3.6}Constraints on intrinsic parameters}{21}
+\contentsline {section}{\numberline {3.7}Intrinsic parameters and the absolute conic}{22}
+\contentsline {section}{\numberline {3.8}Distortion in Calibration}{23}
+\contentsline {section}{\numberline {3.9}Non-linear optimisation}{24}
+\contentsline {chapter}{\numberline {4}Correlation}{25}
+\contentsline {section}{\numberline {4.1}Correspondence problem and speckle patterns}{25}
+\contentsline {section}{\numberline {4.2}Correlation criteria}{26}
+\contentsline {subsection}{\numberline {4.2.1}Cross-Correlation}{26}
+\contentsline {subsection}{\numberline {4.2.2}Sum of Squared Difference}{27}
+\contentsline {subsection}{\numberline {4.2.3}Relation between ZNCC and ZNSSD}{27}
+\contentsline {section}{\numberline {4.3}Warp function}{27}
+\contentsline {section}{\numberline {4.4}Interpolation}{28}
+\contentsline {section}{\numberline {4.5}Subset matching}{28}
+\contentsline {section}{\numberline {4.6}Stopping criteria}{30}
+\contentsline {section}{\numberline {4.7}Algorithm outline}{30}
+\contentsline {chapter}{\numberline {5}Results}{32}
+\contentsline {section}{\numberline {5.1}Part A}{32}
+\contentsline {section}{\numberline {5.2}Part B}{34}
+\contentsline {section}{\numberline {5.3}Part C}{35}
 \contentsline {chapter}{\numberline {6}Conclusion}{38}
 \contentsline {chapter}{Bibliography}{39}

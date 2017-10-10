@@ -9,7 +9,9 @@ Marc~D. Binder, Nobutaka Hirokawa, and Uwe Windhorst, editors.
 Wilhelm Burger.
 \newblock Zhang’s camera calibration algorithm: In-depth tutorial and
   implementation.
-\newblock {\em month}, 2016.
+\newblock Technical Report HGB16-05, University of Applied Sciences Upper
+  Austria, School of Informatics, Communications and Media, Dept. of Digital
+  Media, Hagenberg, Austria, May 2016.
 
 \bibitem{luong1997self}
 Q-T Luong and Olivier~D Faugeras.
