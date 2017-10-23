@@ -1,0 +1,16 @@
+Intro to DIC
+- talk about images and how they are a matrix of light intensity values
+- methods of surface fitting and solving n-dimensional problems
+- how DIC is essentially a surface fitting method
+- relate optical flow to real world displacements
+- DIC encompasses both setting up the problem and solving it - generally limited control over this
+- explain DVC 
+- advantages of method - non-contact - post processing - investigate more complex material behaviour
+
+
+
+
+
+- problems with DIC and material science - discontinuities with continuous assumption - high strain gradient - high rotation
+
+- field fitting to isolate cracks and use different shape function (or strain energy)

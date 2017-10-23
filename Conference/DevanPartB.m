@@ -60,18 +60,31 @@ function DevanPartB
 	xguess=(xf+subpos(1))-(xg+floor(xg1)-floor(subsize/2));
 	yguess=(yf+subpos(2))-(yg+floor(yg1)-floor(subsize/2));
 
-	guess=[xguess;0;0;yguess;0;0]
+	% guess=[xguess;0;0;yguess;0;0]
+	guess=[xguess;yguess]
 	% call the correlation algorithm
+	syms dx dy x0 y0 P P1 P2 P3 P4 P5 P6 P7 P8
+	B=[(1+P2), P3,P7,0, P1;
+	P5, (P6+1),0,P8, P4]
+	X=[dx;dy;sin(dx);sin(dy);1];
+	[a,b,c]=symbolic_warp(B,X)
 	[P,Corr]=DevanDICtracking('undeformed image',F_in,'deformed image',G_in,'subset size',subsize,'subset position',subpos,'guess',guess)
+
+	% [P,Corr]=DICtracking('undeformed image',F_in,'deformed image',G_in,'subset size',subsize,'subset position',subpos,'guess',guess,'warp',a,'warp2',b,'warp3',c)
+	ZNCC=1-Corr/2
+
+
+
+
 	% correct the investigated image to be identical to the reference image 
-	Final_corrected_image=undeform(G_in,P,subsize,subpos);
-	% plot images
-	figure()
-	imagesc(F_in)
-	title('Reference image')
-	figure
-	imagesc(Final_corrected_image)
-	title('investigated image')
+	% Final_corrected_image=undeform(G_in,P,subsize,subpos);
+	% % plot images
+	% figure()
+	% imagesc(F_in)
+	% title('Reference image')
+	% figure
+	% imagesc(Final_corrected_image)
+	% title('investigated image')
 end
 
 function send_this_out=undeform(Ideformed,P,subsize,subpos)
