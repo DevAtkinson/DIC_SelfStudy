@@ -14,3 +14,35 @@ Intro to DIC
 - problems with DIC and material science - discontinuities with continuous assumption - high strain gradient - high rotation
 
 - field fitting to isolate cracks and use different shape function (or strain energy)
+
+
+what it enables us to do
+what it is 
+
+
+
+Brief history of DIC
+- introduced in the 1980s and since has been improved and adapted ever since
+
+Brief intro
+- what dic is - determine optical flow between images and use calibration to relate it back to real world displacements and deformations
+- why it is useful
+- what advantages over conventional methods - determine displacment and deformation (strain gauge/extensometer only deformation) - full field
+- how help with investigating new more complex material properties
+
+Explain what DIC is fundementally
+- what image is - matrix of light intensity values
+- DIC is basically a surface fitting problem - however surface deforms between images (for material science) - one subset surface is fitted to another at a time
+- to mathematically fit the two surfaces two things are needed
+	1. a way of determining the quality of the fit between the two surfaces - correlation criterion
+	2. a mathematical relation explaining how the surface deforms - warp function
+- these define the correlation problem (the surface fitting problem)
+- then use optimization algorithm to solve for the parameters of the warp function that give the best correlation coefficient
+- this is done over the whole image by doing it to many subsets that overlap
+
+Issues with DIC in material science
+- continuous assumption breaks down in presence of discontinuities such as cracks to give spurious displacements
+- warp functions can be rigid which doesn't allow the user to make use of a priori knowledge of the expected material behaviour
+- 
+
+How improve by allowing more control over the algorithm

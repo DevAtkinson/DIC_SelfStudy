@@ -5,18 +5,21 @@ function fulldic
 	inc=5;
 	current_folder=pwd;
 	addpath(strcat(current_folder,'\readimxstuff'));
-	[FileName,PathName] = uigetfile('*.im7','Select the images','MultiSelect','on');
-	image_count=max(size(FileName));
+	% [FileName,PathName] = uigetfile('*.im7','Select the images','MultiSelect','on');
+	% image_count=max(size(FileName));
+
+
+
 	% for i=1:2
 	% 	% image_folder=strcat(PathName,FileName(i))
 	% 	image_folder = fullfile( PathName , FileName{i} );
 	% 	I{i}=readimx(image_folder);
 	% end
 
-	image_folder = fullfile( PathName , FileName{1} );
-	I{1}=readimx(image_folder);
-	image_folder = fullfile( PathName , FileName{1+inc} );
-	I{2}=readimx(image_folder);
+	% image_folder = fullfile( PathName , FileName{1} );
+	% I{1}=readimx(image_folder);
+	% image_folder = fullfile( PathName , FileName{1+inc} );
+	% I{2}=readimx(image_folder);
 
 	%define subset size
 	subsize=61;
@@ -42,11 +45,17 @@ function fulldic
 	% 0 0 0 1 0;
 	% 0 0 0 0 1]
 	% X=[dx;dy;sin(abs(dx)/(subsize/2));sin(abs(dy)/(subsize/2));1];
-	symbolic_warp(B,X)
+
+
+
+	% symbolic_warp(B,X)
+
+
+
 	% clear P;
 	%define subset position
 	% subposin=[1907,1517];
-	selecting=1;
+	selecting=0;
 
 	
 	% % addpath('\readimx') 
@@ -61,10 +70,17 @@ function fulldic
 	% images.Attributes
 
 	% convert images to double
-	F_in=im2double(I{1}.Frames{1,1}.Components{1,1}.Planes{1,1});
-	imagesc(F_in)
-	polygon=imrect();
-	[subpos,horizon_count,vert_cont,xtick,ytick]=Mask2Subsets(polygon,subsize,stepsize);
+
+	% F_in=im2double(I{1}.Frames{1,1}.Components{1,1}.Planes{1,1});
+
+
+	
+	% imagesc(F_in)
+	% polygon=imrect();
+	% [subpos,horizon_count,vert_cont,xtick,ytick]=Mask2Subsets(polygon,subsize,stepsize);
+
+
+
 	% mask=createMask(polygon);
 	% figure
 	% imagesc(mask)
@@ -84,7 +100,11 @@ function fulldic
 	% colormap(gray)
 
 	% G_in=im2double(I{2}.Frames{1,1}.Components{1,1}.Planes{1,1});
-	G_in=im2double(I{2}.Frames{1,1}.Components{1,1}.Planes{1,1});
+
+
+	% G_in=im2double(I{2}.Frames{1,1}.Components{1,1}.Planes{1,1});
+
+
 	% save('G_in_final.mat','G_in');
 
 	% F=F_in(subpos(2):subpos(2)+subsize-1,subpos(1):subpos(1)+subsize-1);
@@ -195,6 +215,28 @@ function fulldic
 	% save('Corr_save.mat','Corr');
 
 
+
+
+
+	image_folder = fullfile( PathName , FileName{1} );
+	I{1}=readimx(image_folder);
+	image_folder = fullfile( PathName , FileName{1+inc} );
+	I{2}=readimx(image_folder);
+	F_in=im2double(I{1}.Frames{1,1}.Components{1,1}.Planes{1,1});
+	subpos=Proc.subpos;
+	out=Proc.starting_subset;
+	% Proc.starting_pos=[(subx+xf),(suby+yf)];
+	% Proc.polygon=polygon;
+	% Proc.stepsize=stepsize;
+	% Proc.subsize=subsize;
+	% Proc.Warp=B;
+	% Proc.WarpVec=X;
+	FileName=Proc.FileName;
+	PathName=Proc.PathName;
+	inc=Proc.inc;
+	current_image=Proc.correlated_to;
+	image_count=max(size(FileName));
+
 	out=whichSubpos(subpos,stepsize,subx+xf,suby+yf)
 	subpos{out(1),out(2)}
 	Proc.subpos=subpos;
@@ -209,8 +251,12 @@ function fulldic
 	Proc.PathName=PathName;
 	Proc.inc=inc;
 	[process,dismax,dissing,D,Index]=correlation_order(subpos,out);
+	Proc.process=process;
+	Proc.dismax=dismax;
+	proc.dissing=dissing;
+	Proc.Index=Index;
 	counter_image=1;
-	for k=(1+inc):inc:image_count
+	for k=(current_image+inc):inc:image_count
 		fprintf('image %d',k);
 		
 		if (k==(1+inc))
@@ -268,7 +314,7 @@ function fulldic
 		end
 		Proc.im{k-1}.D=D;
 		Proc.correlated_to=k;
-		save('Richard_CTL_05.mat','Proc');
+		save('Richard_CTL_05_2.mat','Proc');
 		% result{k-1}.P=P;
 		% result{k-1}.Corr=Corr;
 		
